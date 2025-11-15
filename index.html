@@ -4,13 +4,17 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Fred Bauer</title>
+    <script>document.documentElement.classList.add('js');</script>
     <link rel="icon" type="image/png" href="Melone.png">
     <link rel="stylesheet" href="style.css">
+    <script src="typewriter.js" defer></script>
+    <script src="comment-modal.js" defer></script>
 </head>
 <body>
     <header>
         <nav>
             <ul>
+                <li><a href="#" id="commentBtn" class="comment-trigger">💬 Kommentar</a></li>
                 <li><a href="index.html" class="active">Home</a></li>
                 <li><a href="essays.html">Essays</a></li>
                 <li><a href="media.html">Media</a></li>
@@ -18,8 +22,29 @@
         </nav>
     </header>
     
+    <!-- Comment Modal -->
+    <div id="commentModal" class="modal">
+        <div class="modal-content">
+            <span class="close">&times;</span>
+            <h2>Kommentar hinterlassen</h2>
+            <form id="commentForm" action="https://formsubmit.co/einfacheinfred@gmail.com" method="POST">
+                <!-- FormSubmit Steuerfelder -->
+                <input type="hidden" name="_subject" value="Neuer Kommentar von der Website">
+                <input type="hidden" name="_captcha" value="false">
+                <input type="hidden" name="_template" value="table">
+                <!-- Aktuelle Seite -->
+                <input type="hidden" id="pageUrl" name="Seite" value="">
+
+                <label for="comment">Nachricht:</label>
+                <textarea id="comment" name="Nachricht" rows="6" required placeholder="Ihre Nachricht..."></textarea>
+                
+                <button type="submit">Absenden</button>
+            </form>
+        </div>
+    </div>
+    
     <main>
-        <section class="hero">
+        <section class="hero typewriter">
             <h1>Willkommen</h1>
             <p>Dies ist eine Website.</p>
         </section>

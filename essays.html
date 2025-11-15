@@ -4,13 +4,17 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Essays - Fred Bauer</title>
+    <script>document.documentElement.classList.add('js');</script>
     <link rel="icon" type="image/png" href="Melone.png">
     <link rel="stylesheet" href="style.css">
+    <script src="typewriter.js" defer></script>
+    <script src="comment-modal.js" defer></script>
 </head>
 <body>
     <header>
         <nav>
             <ul>
+                <li><a href="#" id="commentBtn" class="comment-trigger">💬 Kommentar</a></li>
                 <li><a href="index.html">Home</a></li>
                 <li><a href="essays.html" class="active">Essays</a></li>
                 <li><a href="media.html">Media</a></li>
@@ -18,13 +22,34 @@
         </nav>
     </header>
     
+    <!-- Comment Modal -->
+    <div id="commentModal" class="modal">
+        <div class="modal-content">
+            <span class="close">&times;</span>
+            <h2>Kommentar hinterlassen</h2>
+            <form id="commentForm" action="https://formsubmit.co/einfacheinfred@gmail.com" method="POST">
+                <!-- FormSubmit Steuerfelder -->
+                <input type="hidden" name="_subject" value="Neuer Kommentar von der Website">
+                <input type="hidden" name="_captcha" value="false">
+                <input type="hidden" name="_template" value="table">
+                <!-- Aktuelle Seite -->
+                <input type="hidden" id="pageUrl" name="Seite" value="">
+
+                <label for="comment">Nachricht:</label>
+                <textarea id="comment" name="Nachricht" rows="6" required placeholder="Ihre Nachricht..."></textarea>
+                
+                <button type="submit">Absenden</button>
+            </form>
+        </div>
+    </div>
+    
     <main>
-        <section class="hero">
+        <section class="hero typewriter">
             <h1>Essays</h1>
             <p>Meine Gedanken und Betrachtungen</p>
         </section>
         
-        <section class="content">
+        <section class="content typewriter">
             <div class="essay-list">
                 <article class="essay-preview">
                     <h2>Willkommen zu meinen Essays</h2>
@@ -33,16 +58,22 @@
                 </article>
             </div>
         </section>
-        <section class="content" id="comments">
-            <h2>Kommentare</h2>
-            <script src="https://utteranc.es/client.js"
-                    repo="Fred-Bauer/fred-bauer.github.io"
-                    issue-term="pathname"
-                    label="comments"
-                    theme="github-light"
-                    crossorigin="anonymous"
-                    async>
-            </script>
+
+        <section class="content typewriter">
+            <p>
+                Morbi fringilla convallis sapien, id pulvinar odio volutpat. Hi omnes lingua, institutis, legibus inter se differunt. Non equidem invideo, miror magis posuere velit aliquet. Quid securi etiam tamquam eu fugiat nulla pariatur. Inmensae subtilitatis, obscuris et malesuada fames. Fictum, deserunt mollit anim laborum astutumque!
+                A communi observantia non est recedendum. Vivamus sagittis lacus vel augue laoreet rutrum faucibus. Nihilne te nocturnum praesidium Palati, nihil urbis vigiliae.
+                Petierunt uti sibi concilium totius Galliae in diem certam indicere. Morbi fringilla convallis sapien, id pulvinar odio volutpat. A communi observantia non est recedendum.
+                Non equidem invideo, miror magis posuere velit aliquet. Quisque placerat facilisis egestas cillum dolore. Curabitur blandit tempus ardua ridiculus sed magna. Contra legem facit qui id facit quod lex prohibet. Petierunt uti sibi concilium totius Galliae in diem certam indicere.
+                Lorem ipsum dolor sit amet, consectetur adipisici elit, sed eiusmod tempor incidunt ut labore et dolore magna aliqua. Donec sed odio operae, eu vulputate felis rhoncus. Salutantibus vitae elit libero, a pharetra augue. Nihil hic munitissimus habendi senatus locus, nihil horum? A communi observantia non est recedendum.
+                Lorem ipsum dolor sit amet, consectetur adipisici elit, sed eiusmod tempor incidunt ut labore et dolore magna aliqua. Me non paenitet nullum festiviorem excogitasse ad hoc. Ambitioni dedisse scripsisse iudicaretur. Unam incolunt Belgae, aliam Aquitani, tertiam. Morbi fringilla convallis sapien, id pulvinar odio volutpat. A communi observantia non est recedendum.
+                Petierunt uti sibi concilium totius Galliae in diem certam indicere. Morbi fringilla convallis sapien, id pulvinar odio volutpat. A communi observantia non est recedendum.
+                Cum sociis natoque penatibus et magnis dis parturient. Curabitur blandit tempus ardua ridiculus sed magna. Salutantibus vitae elit libero, a pharetra augue.
+                Phasellus laoreet lorem vel dolor tempus vehicula. Idque Caesaris facere voluntate liceret: sese habere. Ab illo tempore, ab est sed immemorabili. Mercedem aut nummos unde unde extricat, amaras. Praeterea iter est quasdam res quas ex communi.
+                Fabio vel iudice vincam, sunt in culpa qui officia. Inmensae subtilitatis, obscuris et malesuada fames. Ambitioni dedisse scripsisse iudicaretur. Nec dubitamus multa iter quae et nos invenerat. Petierunt uti sibi concilium totius Galliae in diem certam indicere.
+                Curabitur blandit tempus ardua ridiculus sed magna. Sed haec quis possit intrepidus aestimare tellus. Quisque ut dolor gravida, placerat libero vel, euismod. Plura mihi bona sunt, inclinet, amari petere vellent.
+                Lorem ipsum dolor sit amet, consectetur adipisici elit, sed eiusmod tempor incidunt ut labore et dolore magna aliqua. Me non paenitet nullum festiviorem excogitasse ad hoc. Ambitioni dedisse scripsisse iudicaretur. Unam incolunt Belgae, aliam Aquitani, tertiam. Morbi fringilla convallis sapien, id pulvinar odio volutpat. A communi observantia non est recedendum.
+            </p>
         </section>
     </main>
     
