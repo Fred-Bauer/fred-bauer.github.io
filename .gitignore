@@ -1,2 +1,8 @@
 # Ignore Windows metadata files
 desktop.ini
+
+# Apps Script mit API Key (nur für lokale Entwicklung)
+apps-script*.js
+
+# Lokale Entwicklungsversion mit Token
+media-local.html
