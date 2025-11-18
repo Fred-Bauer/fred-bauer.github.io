@@ -400,7 +400,7 @@
                             groups['Besitz'].push(obj);
                         } else if (status === 'want' && (owned === 'false' || owned === '')) {
                             groups['Wunschliste'].push(obj);
-                        } else {
+                        } else if (obj.__rating == undefined) {
                             groups['_Andere'].push(obj);
                         }
                     });
