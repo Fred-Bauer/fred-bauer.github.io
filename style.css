@@ -168,6 +168,37 @@ footer {
     border-top: 1px solid #8b7355;
 }
 
+/* Floating Comment Button */
+.floating-comment-btn {
+    position: fixed;
+    bottom: 30px;
+    right: 30px;
+    width: 60px;
+    height: 60px;
+    background-color: #2d2520;
+    color: #e8dcc4;
+    border-radius: 50%;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    font-size: 1.8rem;
+    text-decoration: none;
+    box-shadow: 0 4px 12px rgba(0, 0, 0, 0.3);
+    transition: all 0.3s ease;
+    z-index: 999;
+    border: 2px solid #8b7355;
+}
+
+.floating-comment-btn:hover {
+    background-color: #3d3530;
+    transform: scale(1.1) translateY(-2px);
+    box-shadow: 0 6px 16px rgba(0, 0, 0, 0.4);
+}
+
+.floating-comment-btn:active {
+    transform: scale(1.05) translateY(0);
+}
+
 /* Typewriter Animation */
 
 .typewriter.typing h1,
@@ -202,125 +233,25 @@ html.js .typewriter .date {
     transition: opacity 300ms ease-out;
 }
 
-/* Comment Modal Styles */
-.modal {
-    display: none;
-    position: fixed;
-    z-index: 1000;
-    left: 0;
-    top: 0;
-    width: 100%;
-    height: 100%;
-    background-color: rgba(45, 37, 32, 0.8);
-    backdrop-filter: blur(3px);
-}
-
-.modal-content {
+/* Giscus Comments Section */
+.comments-section {
     background-color: #f5e6d3;
-    margin: 10% auto;
     padding: 2.5rem;
-    border: 2px solid #8b7355;
-    border-radius: 4px;
-    width: 90%;
-    max-width: 500px;
+    border-radius: 2px;
     box-shadow: 
-        0 4px 20px rgba(0, 0, 0, 0.3),
+        0 2px 4px rgba(0,0,0,0.1),
         inset 0 0 100px rgba(139, 115, 85, 0.05);
-    position: relative;
+    border: 1px solid #d4c4a8;
+    margin: 2rem auto;
+    max-width: 850px;
 }
 
-.modal-content h2 {
+.comments-section h2 {
     font-family: 'Spectral', serif;
     color: #2d2520;
     margin-bottom: 1.5rem;
     border-bottom: 2px solid #8b7355;
     padding-bottom: 0.5rem;
-}
-
-.close {
-    color: #8b7355;
-    position: absolute;
-    right: 1.5rem;
-    top: 1.5rem;
-    font-size: 2rem;
-    font-weight: bold;
-    cursor: pointer;
-    transition: color 0.3s;
-    line-height: 1;
-}
-
-.close:hover,
-.close:focus {
-    color: #2d2520;
-}
-
-#commentForm {
-    display: flex;
-    flex-direction: column;
-    gap: 1rem;
-}
-
-#commentForm label {
-    font-family: 'Spectral', serif;
-    color: #2d2520;
-    font-weight: 600;
-    margin-bottom: -0.5rem;
-}
-
-#commentForm input,
-#commentForm textarea {
-    font-family: 'Lora', serif;
-    padding: 0.75rem;
-    border: 1px solid #c4b49d;
-    background-color: #fff;
-    color: #1a1a1a;
-    border-radius: 2px;
-    font-size: 1rem;
-    transition: border-color 0.3s;
-}
-
-#commentForm input:focus,
-#commentForm textarea:focus {
-    outline: none;
-    border-color: #8b7355;
-    box-shadow: 0 0 0 2px rgba(139, 115, 85, 0.1);
-}
-
-#commentForm textarea {
-    resize: vertical;
-    min-height: 120px;
-    line-height: 1.6;
-}
-
-#commentForm button {
-    font-family: 'Spectral', serif;
-    background-color: #2d2520;
-    color: #e8dcc4;
-    border: 2px solid #2d2520;
-    padding: 0.75rem 1.5rem;
-    font-size: 1rem;
-    font-weight: 600;
-    text-transform: uppercase;
-    letter-spacing: 1px;
-    cursor: pointer;
-    border-radius: 2px;
-    transition: all 0.3s;
-    margin-top: 0.5rem;
-}
-
-#commentForm button:hover {
-    background-color: #3d3530;
-    border-color: #8b7355;
-    transform: translateY(-1px);
-    box-shadow: 0 2px 8px rgba(0, 0, 0, 0.2);
-}
-
-#commentForm button:active {
-    transform: translateY(0);
-}
-
-.comment-trigger {
-    font-weight: 600;
 }
 
 @media (max-width: 768px) {

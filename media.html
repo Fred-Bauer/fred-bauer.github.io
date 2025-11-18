@@ -281,29 +281,33 @@
         </nav>
     </header>
     
-    <!-- Comment Modal -->
-    <div id="commentModal" class="modal">
-        <div class="modal-content">
-            <span class="close">&times;</span>
-            <h2>Kommentar hinterlassen</h2>
-            <form id="commentForm" action="https://formsubmit.co/einfacheinfred@gmail.com" method="POST">
-                <input type="hidden" name="_subject" value="Neuer Kommentar von der Website">
-                <input type="hidden" name="_captcha" value="false">
-                <input type="hidden" name="_template" value="table">
-                <input type="hidden" id="pageUrl" name="Seite" value="">
-                <label for="comment">Nachricht:</label>
-                <textarea id="comment" name="Nachricht" rows="6" required placeholder="Ihre Nachricht..."></textarea>
-                <button type="submit">Absenden</button>
-            </form>
-        </div>
-    </div>
-    
     <main class="fullscreen">
         <div class="sheet-wrapper">
             <div class="sheet-container">
                 <div class="loading">Lade Daten...</div>
             </div>
         </div>
+        
+        <!-- Giscus Comments -->
+        <section class="comments-section" id="comments" style="max-width: 1400px; margin: 2rem auto; padding: 20px; background: #f5e6d3; border-radius: 4px;">
+            <h2 style="font-family: 'Spectral', serif; color: #2d2520; margin-bottom: 1.5rem;">Kommentare</h2>
+            <script src="https://giscus.app/client.js"
+                    data-repo="Fred-Bauer/fred-bauer.github.io"
+                    data-repo-id="YOUR_REPO_ID"
+                    data-category="General"
+                    data-category-id="YOUR_CATEGORY_ID"
+                    data-mapping="pathname"
+                    data-strict="0"
+                    data-reactions-enabled="1"
+                    data-emit-metadata="0"
+                    data-input-position="top"
+                    data-theme="light"
+                    data-lang="de"
+                    data-loading="lazy"
+                    crossorigin="anonymous"
+                    async>
+            </script>
+        </section>
     </main>
     
     <script>
@@ -565,9 +569,11 @@
     document.addEventListener('DOMContentLoaded', loadSheetData);
     </script>
     
+    <!-- Floating Comment Button -->
+    <a href="#comments" class="floating-comment-btn" title="Kommentar hinterlassen">💬</a>
+    
     <footer>
         <p>&copy; 2025 Fred Bauer</p>
-        <p><a href="#" id="commentBtn" class="comment-trigger" style="color: #8b7355; text-decoration: underline; cursor: pointer;">💬 Kommentar hinterlassen</a></p>
     </footer>
 </body>
 </html>
