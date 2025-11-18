@@ -48,11 +48,6 @@ nav a {
     font-size: 0.9rem;
 }
 
-/* Kommentar-Button ganz links ausrichten */
-nav ul li:first-child {
-    margin-right: auto;
-}
-
 nav a:hover,
 nav a.active {
     background-color: #3d3530;

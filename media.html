@@ -235,7 +235,12 @@
         }
         
         header + main.fullscreen { margin-top: 0; }
-        footer { display: none; }
+        footer { 
+            display: block;
+            text-align: center;
+            padding: 1rem 0;
+            margin-top: 1rem;
+        }
         
         @media (max-width: 768px) {
             .sheet-wrapper { 
@@ -243,9 +248,16 @@
                 padding: 10px;
             }
             .sheet-content { padding: 15px; }
+            .sheet-tabs {
+                gap: 5px;
+            }
             .sheet-tab {
-                padding: 10px 16px;
-                font-size: 0.9em;
+                padding: 8px 12px;
+                font-size: 0.8em;
+                letter-spacing: 0.3px;
+                flex: 1 1 auto;
+                min-width: 0;
+                white-space: nowrap;
             }
             .sheet-table th,
             .sheet-table td { 
@@ -262,7 +274,6 @@
     <header>
         <nav>
             <ul>
-                <li><a href="#" id="commentBtn" class="comment-trigger">💬 Kommentar</a></li>
                 <li><a href="index.html">Home</a></li>
                 <li><a href="essays.html">Essays</a></li>
                 <li><a href="media.html" class="active">Media</a></li>
@@ -553,5 +564,10 @@
     
     document.addEventListener('DOMContentLoaded', loadSheetData);
     </script>
+    
+    <footer>
+        <p>&copy; 2025 Fred Bauer</p>
+        <p><a href="#" id="commentBtn" class="comment-trigger" style="color: #8b7355; text-decoration: underline; cursor: pointer;">💬 Kommentar hinterlassen</a></p>
+    </footer>
 </body>
 </html>
