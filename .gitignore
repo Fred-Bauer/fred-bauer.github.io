@@ -4,5 +4,8 @@ desktop.ini
 # Apps Script mit API Key (nur für lokale Entwicklung)
 apps-script*.js
 
+# TMDB Config mit sensitive API-Keys (lokal nur)
+config.js
+
 # Lokale Entwicklungsversion mit Token
 media-local.html

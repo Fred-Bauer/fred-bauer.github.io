@@ -7,7 +7,7 @@
     <script>document.documentElement.classList.add('js');</script>
     <link rel="icon" type="image/png" href="Melone.png">
     <link rel="stylesheet" href="style.css">
-    <script src="comment-modal.js" defer></script>
+    <script src="config.js" defer></script>
     <style>
         html, body { height: 100%; margin: 0; padding: 0; }
         
@@ -80,6 +80,75 @@
         .sheet-content.active {
             display: block;
         }
+
+        /* TMDB Modal */
+        .tmdb-modal-backdrop {
+            position: fixed;
+            inset: 0;
+            background: rgba(0,0,0,0.65);
+            display: none;
+            align-items: center;
+            justify-content: center;
+            z-index: 1200;
+            padding: 20px;
+        }
+        .tmdb-modal-backdrop.active { display: flex; }
+        .tmdb-modal {
+            background: #f5e6d3;
+            max-width: 820px;
+            width: 100%;
+            border-radius: 6px;
+            border: 2px solid #8b7355;
+            box-shadow: 0 12px 40px rgba(0,0,0,0.3);
+            overflow: hidden;
+            font-family: 'Lora', serif;
+        }
+        .tmdb-modal header {
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+            padding: 16px 20px;
+            background: #2d2520;
+            color: #f5e6d3;
+        }
+        .tmdb-modal header h3 {
+            margin: 0;
+            font-family: 'Spectral', serif;
+            font-size: 1.25rem;
+        }
+        .tmdb-close {
+            border: none;
+            background: transparent;
+            color: #f5e6d3;
+            font-size: 1.4rem;
+            cursor: pointer;
+        }
+        .tmdb-body {
+            display: grid;
+            grid-template-columns: 180px 1fr;
+            gap: 18px;
+            padding: 18px 20px 22px;
+        }
+        .tmdb-poster {
+            width: 100%;
+            border-radius: 4px;
+            background: #ddd;
+            object-fit: cover;
+            min-height: 260px;
+        }
+        .tmdb-meta { font-size: 0.95rem; color: #2d2520; line-height: 1.55; }
+        .tmdb-tags { margin: 6px 0 10px; display: flex; flex-wrap: wrap; gap: 8px; }
+        .tmdb-tag { background: #e8dcc4; border: 1px solid #cbb89a; padding: 4px 8px; border-radius: 4px; font-size: 0.85rem; }
+        .tmdb-section { margin-top: 10px; }
+        .tmdb-section h4 { margin: 0 0 6px; font-family: 'Spectral', serif; color: #2d2520; }
+        .tmdb-providers { display: flex; flex-wrap: wrap; gap: 8px; }
+        .tmdb-provider { background: #2d2520; color: #f5e6d3; padding: 6px 10px; border-radius: 999px; font-size: 0.85rem; }
+        .tmdb-rating { font-weight: 700; color: #8b7355; }
+        .tmdb-loading { text-align: center; padding: 32px; font-family: 'Spectral', serif; }
+        @media (max-width: 700px) {
+            .tmdb-body { grid-template-columns: 1fr; }
+            .tmdb-modal { max-height: 90vh; overflow-y: auto; }
+        }
         
         /* Category List Styles */
         .category-group {
@@ -141,6 +210,18 @@
             border: 1px dashed #d4c5a9;
             border-radius: 6px;
             padding: 10px 12px;
+            cursor: pointer;
+            transition: all 0.25s ease;
+        }
+        .item:hover {
+            background: #f9f2e4;
+            border-color: #8b7355;
+            border-style: solid;
+            transform: translateY(-2px);
+            box-shadow: 0 4px 12px rgba(139, 115, 85, 0.15);
+        }
+        .item:active {
+            transform: translateY(0);
         }
         .item-header {
             display: flex;
@@ -515,7 +596,8 @@
                                     const t = pickTitle(it);
                                     const m = buildMeta(it);
                                     const stars = (typeof it.__rating === 'number') ? formatStars(it.__rating) : '';
-                                    return `<li class=\"item\"><div class=\"item-title\">${t}${stars ? ` <span class=\\\"rating-stars\\\" title=\\\"${it.__rating}\\\">${stars}</span>` : ''}</div>${m ? `<div class=\"item-meta\">${m}</div>` : ''}</li>`;
+                                    const yearVal = (yearIdx >= 0) ? (it[headers[yearIdx]] ?? '').toString().trim() : '';
+                                    return `<li class=\"item\" data-title=\"${t.replace(/\\"/g,'&quot;')}\" data-year=\"${yearVal}\"><div class=\"item-title\">${t}${stars ? ` <span class=\\\"rating-stars\\\" title=\\\"${it.__rating}\\\">${stars}</span>` : ''}</div>${m ? `<div class=\"item-meta\">${m}</div>` : ''}</li>`;
                                 }).join('')}
                             </ul>
                         </details>`;
@@ -539,6 +621,104 @@
             });
             
             container.innerHTML = html;
+
+            // TMDB Helpers
+            const tmdbConfig = () => {
+                const cfg = (window.APP_CONFIG ?? {});
+                return {
+                    apiKey: cfg.TMDB_API_KEY || '',
+                    bearer: cfg.TMDB_BEARER || ''
+                };
+            };
+            const tmdbSearch = async (title, year) => {
+                const { apiKey, bearer } = tmdbConfig();
+                if (!apiKey && !bearer) throw new Error('TMDB Schlüssel nicht gesetzt. Bitte APP_CONFIG bereitstellen.');
+                const params = new URLSearchParams({ query: title, include_adult: 'false', language: 'de-DE' });
+                if (year) params.append('year', year);
+                const headers = bearer ? { Authorization: `Bearer ${bearer}` } : {};
+                const resp = await fetch(`https://api.themoviedb.org/3/search/multi?${params.toString()}${apiKey ? `&api_key=${apiKey}` : ''}`, { headers });
+                if (!resp.ok) throw new Error('TMDB Suche fehlgeschlagen');
+                const json = await resp.json();
+                return (json.results || []).filter(r => ['movie','tv'].includes(r.media_type));
+            };
+            const tmdbDetails = async (mediaType, id) => {
+                const { apiKey, bearer } = tmdbConfig();
+                const headers = bearer ? { Authorization: `Bearer ${bearer}` } : {};
+                const suffixKey = apiKey ? `?api_key=${apiKey}&` : '?';
+                const base = `https://api.themoviedb.org/3/${mediaType}/${id}${suffixKey}language=de-DE&append_to_response=credits,watch/providers`;
+                const resp = await fetch(base, { headers });
+                if (!resp.ok) throw new Error('TMDB Details fehlgeschlagen');
+                return resp.json();
+            };
+            const renderModal = (data) => {
+                const backdrop = document.getElementById('tmdbModal');
+                const titleEl = document.getElementById('tmdbTitle');
+                const metaEl = document.getElementById('tmdbMeta');
+                const posterEl = document.getElementById('tmdbPoster');
+                titleEl.textContent = `${data.title} ${data.year ? `(${data.year})` : ''}`;
+                posterEl.src = data.poster || '';
+                posterEl.alt = data.title;
+                const genres = (data.genres || []).map(g => `<span class="tmdb-tag">${g}</span>`).join(' ');
+                const providers = (data.providers || []).map(p => `<span class="tmdb-provider">${p}</span>`).join(' ');
+                const cast = data.cast ? `<div class="tmdb-section"><h4>Cast</h4><div>${data.cast}</div></div>` : '';
+                const overview = data.overview ? `<div class="tmdb-section"><h4>Inhalt</h4><div>${data.overview}</div></div>` : '';
+                const provBlock = providers ? `<div class="tmdb-section"><h4>Streaming (DE)</h4><div class="tmdb-providers">${providers}</div></div>` : '';
+                metaEl.innerHTML = `
+                    <div class="tmdb-section"><strong>${data.mediaTypeLabel}</strong> · ${data.year || '—'} · ${data.runtime || ''} · <span class="tmdb-rating">${data.rating}</span></div>
+                    ${genres ? `<div class="tmdb-tags">${genres}</div>` : ''}
+                    ${overview}
+                    ${cast}
+                    ${provBlock}
+                `;
+                backdrop.classList.add('active');
+            };
+            const closeModal = () => document.getElementById('tmdbModal').classList.remove('active');
+            document.querySelector('#tmdbModal .tmdb-close').addEventListener('click', closeModal);
+            document.getElementById('tmdbModal').addEventListener('click', (e) => {
+                if (e.target.id === 'tmdbModal') closeModal();
+            });
+
+            const attachHandlers = () => {
+                document.querySelectorAll('.item').forEach(item => {
+                    item.addEventListener('click', async () => {
+                        const title = item.dataset.title || item.textContent.trim();
+                        const year = item.dataset.year || '';
+                        const backdrop = document.getElementById('tmdbModal');
+                        const metaEl = document.getElementById('tmdbMeta');
+                        const titleEl = document.getElementById('tmdbTitle');
+                        const posterEl = document.getElementById('tmdbPoster');
+                        backdrop.classList.add('active');
+                        titleEl.textContent = 'Suche TMDB...';
+                        metaEl.innerHTML = '<div class="tmdb-loading">Suche...</div>';
+                        posterEl.removeAttribute('src');
+                        try {
+                            const results = await tmdbSearch(title, year);
+                            if (!results.length) throw new Error('Keine Treffer gefunden');
+                            const best = results[0];
+                            const details = await tmdbDetails(best.media_type, best.id);
+                            const providers = (((details['watch/providers'] || {}).results || {}).DE || {}).flatrate || [];
+                            const providerNames = providers.map(p => p.provider_name);
+                            const cast = (details.credits?.cast || []).slice(0,5).map(c => c.name).join(', ');
+                            const poster = best.poster_path ? `https://image.tmdb.org/t/p/w500${best.poster_path}` : '';
+                            renderModal({
+                                title: best.title || best.name || title,
+                                year: (best.release_date || best.first_air_date || '').slice(0,4),
+                                runtime: details.runtime ? `${details.runtime} min` : '',
+                                rating: details.vote_average ? `${details.vote_average.toFixed(1)}/10` : '–',
+                                genres: (details.genres || []).map(g => g.name),
+                                overview: details.overview || 'Keine Beschreibung verfügbar.',
+                                cast,
+                                providers: providerNames,
+                                mediaTypeLabel: best.media_type === 'tv' ? 'Serie' : 'Film',
+                                poster
+                            });
+                        } catch (err) {
+                            metaEl.innerHTML = `<div class="tmdb-loading">${err.message}</div>`;
+                        }
+                    });
+                });
+            };
+            attachHandlers();
             
             // Tab-Switching
             document.querySelectorAll('.sheet-tab').forEach(tab => {
@@ -568,6 +748,20 @@
     
     document.addEventListener('DOMContentLoaded', loadSheetData);
     </script>
+
+    <!-- TMDB Modal -->
+    <div class="tmdb-modal-backdrop" id="tmdbModal">
+        <div class="tmdb-modal">
+            <header>
+                <h3 id="tmdbTitle">Lade...</h3>
+                <button class="tmdb-close" aria-label="Schließen" type="button">×</button>
+            </header>
+            <div class="tmdb-body">
+                <img id="tmdbPoster" class="tmdb-poster" alt="Poster" />
+                <div class="tmdb-meta" id="tmdbMeta"></div>
+            </div>
+        </div>
+    </div>
     
     <!-- Floating Comment Button -->
     <!-- <a href="#comments" class="floating-comment-btn" title="Kommentar hinterlassen">💬</a> -->
