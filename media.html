@@ -680,11 +680,27 @@
                 if (author) parts.push(`inauthor:${author}`);
                 if (year) parts.push(year);
                 const query = parts.join(' ') || title || author || '';
-                const params = new URLSearchParams({ q: query, maxResults: '10' });
+                const params = new URLSearchParams({ q: query, maxResults: '20' });
                 const resp = await fetch(`https://www.googleapis.com/books/v1/volumes?${params.toString()}`);
                 if (!resp.ok) throw new Error('Google Books Suche fehlgeschlagen');
                 const json = await resp.json();
-                return (json.items || []);
+                let results = (json.items || []);
+                
+                // Filter nach Jahr wenn angegeben
+                if (year && results.length > 0) {
+                    const yearNum = parseInt(year);
+                    const yearFiltered = results.filter(item => {
+                        const pubDate = item.volumeInfo?.publishedDate || '';
+                        const pubYear = parseInt(pubDate.slice(0, 4));
+                        return !isNaN(pubYear) && Math.abs(pubYear - yearNum) <= 1; // ±1 Jahr Toleranz
+                    });
+                    // Wenn gefilterte Ergebnisse vorhanden, bevorzuge diese
+                    if (yearFiltered.length > 0) {
+                        results = yearFiltered;
+                    }
+                }
+                
+                return results;
             };
 
             // rawg.io Helpers
