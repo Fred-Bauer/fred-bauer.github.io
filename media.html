@@ -582,7 +582,7 @@
                         return `${'★'.repeat(Math.min(count, 5))}${count > 5 ? ' ' + '☆'.repeat(exceeding) : ''}`;
                     };
 
-                    const renderGroup = (label, items) => {
+                    const renderGroup = (label, items, sheetType) => {
                         const count = items.length;
                         return `
                         <details class="category">
@@ -597,23 +597,26 @@
                                     const m = buildMeta(it);
                                     const stars = (typeof it.__rating === 'number') ? formatStars(it.__rating) : '';
                                     const yearVal = (yearIdx >= 0) ? (it[headers[yearIdx]] ?? '').toString().trim() : '';
-                                    return `<li class=\"item\" data-title=\"${t.replace(/\\"/g,'&quot;')}\" data-year=\"${yearVal}\"><div class=\"item-title\">${t}${stars ? ` <span class=\\\"rating-stars\\\" title=\\\"${it.__rating}\\\">${stars}</span>` : ''}</div>${m ? `<div class=\"item-meta\">${m}</div>` : ''}</li>`;
+                                    const authorVal = (headers[1] ?? '') ? (it[headers[1]] ?? '').toString().trim() : '';
+                                    return `<li class=\"item\" data-title=\"${t.replace(/\\"/g,'&quot;')}\" data-year=\"${yearVal}\" data-author=\"${authorVal.replace(/\\"/g,'&quot;')}\" data-sheet-type=\"${sheetType}\"><div class=\"item-title\">${t}${stars ? ` <span class=\\\"rating-stars\\\" title=\\\"${it.__rating}\\\">${stars}</span>` : ''}</div>${m ? `<div class=\"item-meta\">${m}</div>` : ''}</li>`;
                                 }).join('')}
                             </ul>
                         </details>`;
                     };
                     
+                    const sheetType = detectMediaType(name);
+
                     html += '<div class="category-group">';
-                    html += renderGroup('Rezensionen', groups['Rezensionen']);
+                    html += renderGroup('Rezensionen', groups['Rezensionen'], sheetType);
                     if (ratedItems.length) {
                         ratedItems.sort((a,b) => (b.__rating ?? 0) - (a.__rating ?? 0));
-                        html += renderGroup('Bewertungen', ratedItems);
+                        html += renderGroup('Bewertungen', ratedItems, sheetType);
                     }
                     if (ownedIdx >= 0) {
-                        html += renderGroup('Besitz', groups['Besitz']);
+                        html += renderGroup('Besitz', groups['Besitz'], sheetType);
                     }
-                    html += renderGroup('Wunschliste', groups['Wunschliste']);
-                    if (groups['_Andere'].length) html += renderGroup('_Andere', groups['_Andere']);
+                    html += renderGroup('Wunschliste', groups['Wunschliste'], sheetType);
+                    if (groups['_Andere'].length) html += renderGroup('_Andere', groups['_Andere'], sheetType);
                     html += '</div>';
                 }
                 
@@ -621,6 +624,14 @@
             });
             
             container.innerHTML = html;
+
+            // Determine sheet type per sheet name (function declaration to avoid TDZ)
+            function detectMediaType(sheetName) {
+                const lower = (sheetName || '').trim().toLowerCase();
+                if (lower === 'bücher') return 'book';
+                if (lower === 'games') return 'game';
+                return 'movie'; // Default für Filme/Serien
+            }
 
             // TMDB Helpers
             const tmdbConfig = () => {
@@ -650,6 +661,53 @@
                 if (!resp.ok) throw new Error('TMDB Details fehlgeschlagen');
                 return resp.json();
             };
+
+            // Google Books Helpers
+            const googleBooksSearch = async (title, author, year) => {
+                const parts = [];
+                if (title) parts.push(`intitle:${title}`);
+                if (author) parts.push(`inauthor:${author}`);
+                if (year) parts.push(year);
+                const query = parts.join(' ') || title || author || '';
+                const params = new URLSearchParams({ q: query, maxResults: '10' });
+                const resp = await fetch(`https://www.googleapis.com/books/v1/volumes?${params.toString()}`);
+                if (!resp.ok) throw new Error('Google Books Suche fehlgeschlagen');
+                const json = await resp.json();
+                return (json.items || []);
+            };
+
+            // rawg.io Helpers
+            const rawgSearch = async (title) => {
+                const cfg = (window.APP_CONFIG ?? {});
+                const params = new URLSearchParams({ search: title, page_size: 10 });
+                if (cfg.RAWG_API_KEY) params.append('key', cfg.RAWG_API_KEY);
+                const resp = await fetch(`https://api.rawg.io/api/games?${params.toString()}`);
+                if (!resp.ok) {
+                    if (resp.status === 403 || resp.status === 401) {
+                        throw new Error('rawg.io: API-Key fehlt oder ist ungültig (RAWG_API_KEY in config.js)');
+                    }
+                    throw new Error(`rawg.io Suche fehlgeschlagen (Status ${resp.status})`);
+                }
+                const json = await resp.json();
+                return (json.results || []);
+            };
+
+            const rawgDetails = async (id) => {
+                const cfg = (window.APP_CONFIG ?? {});
+                const params = new URLSearchParams({});
+                if (cfg.RAWG_API_KEY) params.append('key', cfg.RAWG_API_KEY);
+                const query = params.toString();
+                const resp = await fetch(`https://api.rawg.io/api/games/${id}${query ? `?${query}` : ''}`);
+                if (!resp.ok) {
+                    if (resp.status === 403 || resp.status === 401) {
+                        throw new Error('rawg.io: API-Key fehlt oder ist ungültig (RAWG_API_KEY in config.js)');
+                    }
+                    throw new Error(`rawg.io Details fehlgeschlagen (Status ${resp.status})`);
+                }
+                return resp.json();
+            };
+
+            // Unified Modal Render
             const renderModal = (data) => {
                 const backdrop = document.getElementById('tmdbModal');
                 const titleEl = document.getElementById('tmdbTitle');
@@ -660,9 +718,9 @@
                 posterEl.alt = data.title;
                 const genres = (data.genres || []).map(g => `<span class="tmdb-tag">${g}</span>`).join(' ');
                 const providers = (data.providers || []).map(p => `<span class="tmdb-provider">${p}</span>`).join(' ');
-                const cast = data.cast ? `<div class="tmdb-section"><h4>Cast</h4><div>${data.cast}</div></div>` : '';
-                const overview = data.overview ? `<div class="tmdb-section"><h4>Inhalt</h4><div>${data.overview}</div></div>` : '';
-                const provBlock = providers ? `<div class="tmdb-section"><h4>Streaming (DE)</h4><div class="tmdb-providers">${providers}</div></div>` : '';
+                const cast = data.cast ? `<div class="tmdb-section"><h4>${data.mediaType === 'book' ? 'Autor' : data.mediaType === 'game' ? 'Entwickler' : 'Cast'}</h4><div>${data.cast}</div></div>` : '';
+                const overview = data.overview ? `<div class="tmdb-section"><h4>${data.mediaType === 'book' ? 'Beschreibung' : 'Inhalt'}</h4><div>${data.overview}</div></div>` : '';
+                const provBlock = providers ? `<div class="tmdb-section"><h4>Verfügbar auf</h4><div class="tmdb-providers">${providers}</div></div>` : '';
                 metaEl.innerHTML = `
                     <div class="tmdb-section"><strong>${data.mediaTypeLabel}</strong> · ${data.year || '—'} · ${data.runtime || ''} · <span class="tmdb-rating">${data.rating}</span></div>
                     ${genres ? `<div class="tmdb-tags">${genres}</div>` : ''}
@@ -683,35 +741,84 @@
                     item.addEventListener('click', async () => {
                         const title = item.dataset.title || item.textContent.trim();
                         const year = item.dataset.year || '';
+                        const author = item.dataset.author || '';
+                        const sheetType = item.dataset.sheetType || detectMediaType(item.closest('.sheet-content')?.dataset.sheet || '');
                         const backdrop = document.getElementById('tmdbModal');
                         const metaEl = document.getElementById('tmdbMeta');
                         const titleEl = document.getElementById('tmdbTitle');
                         const posterEl = document.getElementById('tmdbPoster');
                         backdrop.classList.add('active');
-                        titleEl.textContent = 'Suche TMDB...';
-                        metaEl.innerHTML = '<div class="tmdb-loading">Suche...</div>';
+                        titleEl.textContent = 'Suche...';
+                        metaEl.innerHTML = '<div class="tmdb-loading">Suche läuft...</div>';
                         posterEl.removeAttribute('src');
                         try {
-                            const results = await tmdbSearch(title, year);
-                            if (!results.length) throw new Error('Keine Treffer gefunden');
-                            const best = results[0];
-                            const details = await tmdbDetails(best.media_type, best.id);
-                            const providers = (((details['watch/providers'] || {}).results || {}).DE || {}).flatrate || [];
-                            const providerNames = providers.map(p => p.provider_name);
-                            const cast = (details.credits?.cast || []).slice(0,5).map(c => c.name).join(', ');
-                            const poster = best.poster_path ? `https://image.tmdb.org/t/p/w500${best.poster_path}` : '';
-                            renderModal({
-                                title: best.title || best.name || title,
-                                year: (best.release_date || best.first_air_date || '').slice(0,4),
-                                runtime: details.runtime ? `${details.runtime} min` : '',
-                                rating: details.vote_average ? `${details.vote_average.toFixed(1)}/10` : '–',
-                                genres: (details.genres || []).map(g => g.name),
-                                overview: details.overview || 'Keine Beschreibung verfügbar.',
-                                cast,
-                                providers: providerNames,
-                                mediaTypeLabel: best.media_type === 'tv' ? 'Serie' : 'Film',
-                                poster
-                            });
+                            if (sheetType === 'book') {
+                                // Google Books
+                                const results = await googleBooksSearch(title, author, year);
+                                if (!results.length) throw new Error('Keine Treffer gefunden');
+                                const best = results[0];
+                                const info = best.volumeInfo;
+                                const poster = info.imageLinks?.thumbnail || '';
+                                renderModal({
+                                    title: info.title || title,
+                                    year: info.publishedDate?.slice(0,4) || '',
+                                    runtime: info.pageCount ? `${info.pageCount} Seiten` : '',
+                                    rating: info.averageRating ? `${info.averageRating}/5` : '–',
+                                    genres: info.categories || [],
+                                    overview: info.description || 'Keine Beschreibung verfügbar.',
+                                    cast: (info.authors || []).join(', '),
+                                    providers: [],
+                                    mediaTypeLabel: 'Buch',
+                                    mediaType: 'book',
+                                    poster
+                                });
+                            } else if (sheetType === 'game') {
+                                // rawg.io
+                                const results = await rawgSearch(title);
+                                if (!results.length) throw new Error('Keine Treffer gefunden');
+                                const best = results[0];
+                                const details = await rawgDetails(best.id);
+                                const poster = details.background_image || best.background_image || '';
+                                const platforms = (details.platforms || best.platforms || []).map(p => p.platform.name).slice(0,5).join(', ');
+                                const description = details.description_raw || (details.description ? details.description.replace(/<[^>]+>/g, '') : '') || 'Keine Beschreibung verfügbar.';
+                                const developers = (details.developers || best.developers || []).map(d => d.name).join(', ');
+                                renderModal({
+                                    title: best.name || title,
+                                    year: best.released?.slice(0,4) || '',
+                                    runtime: platforms ? `Plattformen: ${platforms}` : '',
+                                    rating: (details.rating || best.rating) ? `${(details.rating || best.rating)}/5` : '–',
+                                    genres: (details.genres || best.genres || []).map(g => g.name),
+                                    overview: description,
+                                    cast: developers,
+                                    providers: [],
+                                    mediaTypeLabel: 'Spiel',
+                                    mediaType: 'game',
+                                    poster
+                                });
+                            } else {
+                                // TMDB (Filme/Serien)
+                                const results = await tmdbSearch(title, year);
+                                if (!results.length) throw new Error('Keine Treffer gefunden');
+                                const best = results[0];
+                                const details = await tmdbDetails(best.media_type, best.id);
+                                const providers = (((details['watch/providers'] || {}).results || {}).DE || {}).flatrate || [];
+                                const providerNames = providers.map(p => p.provider_name);
+                                const cast = (details.credits?.cast || []).slice(0,5).map(c => c.name).join(', ');
+                                const poster = best.poster_path ? `https://image.tmdb.org/t/p/w500${best.poster_path}` : '';
+                                renderModal({
+                                    title: best.title || best.name || title,
+                                    year: (best.release_date || best.first_air_date || '').slice(0,4),
+                                    runtime: details.runtime ? `${details.runtime} min` : '',
+                                    rating: details.vote_average ? `${details.vote_average.toFixed(1)}/10` : '–',
+                                    genres: (details.genres || []).map(g => g.name),
+                                    overview: details.overview || 'Keine Beschreibung verfügbar.',
+                                    cast,
+                                    providers: providerNames,
+                                    mediaTypeLabel: best.media_type === 'tv' ? 'Serie' : 'Film',
+                                    mediaType: 'movie',
+                                    poster
+                                });
+                            }
                         } catch (err) {
                             metaEl.innerHTML = `<div class="tmdb-loading">${err.message}</div>`;
                         }
