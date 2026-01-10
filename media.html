@@ -405,6 +405,17 @@
                 throw new Error(data.error || 'Unbekannter Fehler');
             }
             
+            // API-Keys aus Apps Script laden (fallback zu lokaler config.js)
+            if (data.config) {
+                window.APP_CONFIG = {
+                    TMDB_API_KEY: data.config.TMDB_API_KEY || '',
+                    TMDB_BEARER: data.config.TMDB_BEARER || '',
+                    RAWG_API_KEY: data.config.RAWG_API_KEY || ''
+                };
+            } else if (!window.APP_CONFIG) {
+                window.APP_CONFIG = {};
+            }
+            
             if (!data.sheets || Object.keys(data.sheets).length === 0) {
                 container.innerHTML = '<p class="loading">Keine Sheets gefunden.</p>';
                 return;
