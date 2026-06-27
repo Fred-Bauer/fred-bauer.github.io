@@ -50,7 +50,7 @@
         const stored = localStorage.getItem(KEY);
         const count = stored !== null
             ? parseInt(stored, 10) + 1
-            : Math.floor(Math.random() * 40000 + 10000);
+            : Math.floor(Math.random() * 40000);
         localStorage.setItem(KEY, count);
         document.getElementById('counter-digits').textContent =
             String(count).padStart(6, '0');
