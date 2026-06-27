@@ -20,14 +20,14 @@
         <div class="sheet-wrapper">
             <div class="sheet-container">
                 <div class="loading">Lade Daten...</div>
-            </div>
-            <!--
-                Statusbar: Win98-Stil, mit JS befüllt.
-                data-statusbar-count wird vom Rendering-Code
-                aktualisiert, sobald die Daten geladen sind.
-            -->
-            <div class="statusbar" id="statusbar">
-                <span class="statusbar-segment" id="statusbar-count">Bereit</span>
+                <!--
+                    Statusbar innerhalb von sheet-container, damit sie
+                    dieselbe max-width und margin:auto erbt und nicht
+                    breiter als die Tabelle wird.
+                -->
+                <div class="statusbar" id="statusbar">
+                    <span class="statusbar-segment" id="statusbar-count">Bereit</span>
+                </div>
             </div>
         </div>
     </main>
