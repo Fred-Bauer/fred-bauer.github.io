@@ -1,0 +1,54 @@
+<!DOCTYPE html>
+<html lang="de">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Blog — Fred Bauer</title>
+    <link rel="icon" type="image/png" href="Melone.png">
+    <!-- style.css: Reset + Site-Logo (geteilt für alle Seiten) -->
+    <link rel="stylesheet" href="style.css">
+    <!-- book.css: Moleskin-Tagebuch-Design, spezifisch für diese Seite -->
+    <link rel="stylesheet" href="book.css">
+</head>
+<body>
+    <!-- Melone = fester Link zurück zur Startseite -->
+    <a class="site-logo" href="index.html" title="Startseite">
+        <img src="Melone.png" alt="Home">
+    </a>
+
+    <main>
+        <!-- .page-wrapper ist die cremeweiße Notizbuchseite,
+             mit Spiralbindung via CSS-::before Pseudo-Element -->
+        <div class="page-wrapper">
+            <h1>Blog</h1>
+            <hr>
+            <p>Hier erscheinen vielleicht erste Texte.</p>
+        </div>
+
+        <!-- Giscus-Kommentarbereich: eigene "Seite" direkt darunter -->
+        <div class="comments-section" id="comments">
+            <h2>Kommentare</h2>
+            <script src="https://giscus.app/client.js"
+                    data-repo="Fred-Bauer/fred-bauer.github.io"
+                    data-repo-id="R_kgDOQVq7mA"
+                    data-category="General"
+                    data-category-id="DIC_kwDOQVq7mM4Cx8Qi"
+                    data-mapping="pathname"
+                    data-strict="0"
+                    data-reactions-enabled="1"
+                    data-emit-metadata="0"
+                    data-input-position="top"
+                    data-theme="light"
+                    data-lang="de"
+                    data-loading="lazy"
+                    crossorigin="anonymous"
+                    async>
+            </script>
+        </div>
+    </main>
+
+    <footer>
+        <p>&copy; 2025 Fred Bauer</p>
+    </footer>
+</body>
+</html>

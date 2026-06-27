@@ -6,9 +6,24 @@
    Hintergrund: #008080 Teal-Desktop (Win98-Standard)
    ===================================================== */
 
+/* Links: Teal-Töne passend zur Win98-Desktop-Farbe.
+   style.css liefert keine Link-Farben mehr. */
+a {
+    color: #00ccdd;
+    text-decoration: underline;
+}
+
+a:visited {
+    color: #aa99ee;
+}
+
+a:hover {
+    color: #ffffff;
+}
+
 /* Win98 Standard-Desktopfarbe als Seitenhintergrund.
-   background-image: none überschreibt den Sternen-Effekt
-   aus style.css, der für die Index-Seite gedacht ist. */
+   background-image: none verhindert versehentliche Sterne
+   falls ein Browser globale body-Stile vererbt. */
 html, body {
     height: 100%;
     margin: 0;

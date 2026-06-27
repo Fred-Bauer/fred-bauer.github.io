@@ -10,7 +10,48 @@
    ======================================================= */
 body.page-index {
     cursor: crosshair;
-    /* Hintergrund: Sterne-Muster kommt von style.css, kein Override nötig */
+
+    /* Sterne-Hintergrund — drei überlagerte radial-gradient-Ebenen erzeugen
+       ein unregelmäßiges Punktmuster. Früher in style.css, jetzt hier:
+       index.html ist die einzige Seite, die diese Optik benutzt. */
+    background-color: #020e02; /* dunkles Waldgrün: Melonenschale */
+    background-image:
+        radial-gradient(circle, rgba(255, 220,   0, 0.90) 1px, transparent 1px),
+        radial-gradient(circle, rgba(255, 200,  50, 0.65) 1px, transparent 1px),
+        radial-gradient(circle, rgba(255, 240, 120, 0.40) 1px, transparent 1px);
+    background-size: 250px 200px, 130px 90px, 70px 55px;
+    background-position: 0 0, 40px 25px, 80px 50px;
+    min-height: 100vh;
+
+    font-family: Verdana, Arial, sans-serif;
+    font-size: 14px;
+    line-height: 1.6;
+    color: #000000;
+}
+
+/* Links: klassisch blau + lila (besucht) für GeoCities-Look */
+body.page-index a {
+    color: #0000ee;
+    text-decoration: underline;
+}
+
+body.page-index a:visited {
+    color: #551a8b;
+}
+
+body.page-index a:hover {
+    color: #ff0000;
+}
+
+/* Footer: dezentes Grün, passend zur Melonenfarbpalette */
+body.page-index footer {
+    text-align: center;
+    padding: 12px 0;
+    color: #aae080;
+    font-size: 12px;
+    font-family: Verdana, Arial, sans-serif;
+    border-top: 1px solid #2d5018;
+    margin-top: 8px;
 }
 
 
@@ -169,7 +210,29 @@ body.page-index hr {
 }
 
 /* =======================================================
-   INDEX-LINKS — überschreibt den Win98-Raised-Stil.
+   INDEX-LINKS — Basis-Layout (list-style, Abstand)
+   Die Win98-Button-Optik aus style.css existiert nicht
+   mehr — hier ist der GeoCities-Look die einzige Quelle.
+   ======================================================= */
+.index-links {
+    list-style: none;
+    padding: 0;
+    margin: 0;
+}
+
+.index-links li {
+    margin-bottom: 4px;
+}
+
+.index-links .link-desc {
+    font-family: Arial, sans-serif;
+    font-size: 11px;
+    color: #555555;
+    margin-top: 2px;
+}
+
+/* =======================================================
+   INDEX-LINKS — GeoCities-Stil: transparent, unterstrichen
    GeoCities-Stil: klassisch blau, unterstrichen, mit
    zufälligen Emoji-Icons davor (per data-icon-Attribut,
    via JS bei DOMContentLoaded gesetzt, CSS liest mit

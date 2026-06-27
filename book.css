@@ -1,0 +1,292 @@
+/* =====================================================
+   BOOK.CSS — Blog-Seite (blog.html)
+   Design: Moleskin-Tagebuch
+
+   Konzept: Eine cremeweiße Notizbuchseite schwebt auf
+   dunklem Leder-Hintergrund. Links simuliert ein CSS-
+   Kreismuster eine Spiralbindung aus Metallringen.
+
+   Schriften (Google Fonts, ein Request):
+     H1        → Merriweather 700  (kräftiger Buchtitel)
+     H2–H6     → Spectral 600/400 (elegante Zwischentitel)
+     Fließtext → Lora 400/700     (leserfreundliche Antiqua)
+
+   Bewusst keine CSS-Variablen hier: das Design ist eine
+   in sich geschlossene Einheit ohne Vererbung von
+   style.css – jede Farbe steht explizit im Code.
+   ===================================================== */
+
+/* display=swap: Text bleibt mit Fallback sichtbar, bis
+   der Web-Font geladen ist (vermeidet FOIT –
+   "Flash of Invisible Text"). */
+@import url('https://fonts.googleapis.com/css2?family=Lora:ital,wght@0,400;0,700;1,400&family=Merriweather:wght@700&family=Spectral:ital,wght@0,400;0,600;1,400&display=swap');
+
+/* =======================================================
+   BODY — Leder-Hintergrund
+   #14100c: extrem dunkles Warmbraun – erinnert an das
+   Cover eines alten Notizbuchs ohne Bildtextur.
+   ======================================================= */
+body {
+    background-color: #14100c;
+    font-family: 'Lora', Georgia, serif;
+    font-size: 17px;
+    line-height: 1.75;
+    color: #1a1008;
+    min-height: 100vh;
+}
+
+/* =======================================================
+   LINKS — tintenbräunlich, nicht leuchtend blau.
+   text-underline-offset hebt die Linie vom Buchstaben ab –
+   bei Serifenfonts mit Unterlängen deutlich lesbarer.
+   ======================================================= */
+a {
+    color: #6b3a1f;
+    text-decoration: underline;
+    text-underline-offset: 3px;
+}
+
+a:visited {
+    color: #8b5a3a;
+}
+
+a:hover {
+    color: #2a0e04;
+}
+
+/* =======================================================
+   MAIN-LAYOUT
+   padding-left = 10px Rand + 48px Logo + 16px Luft +
+                  28px Spiralbindung = 102px
+   Das Logo ist fixed, braucht also keinen Platzhaltter
+   im Fluss – aber wir schieben den Text trotzdem raus,
+   damit der Inhalt nicht hinter der Melone startet.
+   ======================================================= */
+main {
+    max-width: 800px;
+    margin: 40px auto 60px;
+    padding: 0 20px 0 102px;
+}
+
+/* =======================================================
+   PAGE-WRAPPER — die cremeweiße Notizbuchseite
+
+   box-shadow: zweistufig für "schwebendes Papier":
+     Erste Ebene (klein, hart): scharfe Tiefenkante
+     Zweite Ebene (groß, weich): atmosphärischer Schatten
+   position: relative → ::before positioniert sich dazu.
+   margin-left: 28px → Platz für die Spirale außen links.
+   ======================================================= */
+.page-wrapper {
+    position: relative;
+    background-color: #fef9f0;
+    padding: 52px 52px 52px 56px;
+    box-shadow:
+        2px 4px 0   rgba(0, 0, 0, 0.40),
+        4px 12px 32px rgba(0, 0, 0, 0.45);
+    margin-left: 28px;
+}
+
+/* =======================================================
+   SPIRALBINDUNG — CSS-Kreismuster am linken Rand
+
+   Technik: Ein schmaler position:absolute Streifen trägt
+   ein radial-gradient() als Hintergrundmuster.
+   background-size: 20px 28px → eine Kachel pro Ring.
+   Jeder "Ring" besteht aus drei Farbzonen:
+     #e8cc88 (Zentrum): Lichtreflex
+     #c8aa6e (Körper):  goldener Metallton
+     #8a6e3a (Rand):    Schattierung für Tiefenwirkung
+   transparent außerhalb des Kreises lässt den Leder-
+   Hintergrund durchscheinen.
+   ======================================================= */
+.page-wrapper::before {
+    content: '';
+    position: absolute;
+    /* Überlappt den linken Rand: halb auf der Seite, halb außerhalb */
+    left: -22px;
+    top: 20px;
+    width: 20px;
+    height: calc(100% - 40px);
+    background-image: radial-gradient(
+        circle at 50% 50%,
+        #e8cc88 20%,    /* Lichtreflex im Zentrum */
+        #c8aa6e 35%,    /* goldener Ringkörper */
+        #8a6e3a 52%,    /* dunkler Rand */
+        transparent 53% /* Leder dahinter sichtbar */
+    );
+    background-size: 20px 28px;
+    background-repeat: repeat-y;
+    background-position: center;
+}
+
+/* =======================================================
+   TYPOGRAFIE — H1 Merriweather, H2–H6 Spectral, Text Lora
+   ======================================================= */
+
+/* Buchtitel: kräftig, klassisch, gesperrt aber nicht
+   zu weit – Merriweather neigt zum Sperren. */
+h1 {
+    font-family: 'Merriweather', Georgia, serif;
+    font-weight: 700;
+    font-size: 2.2rem;
+    color: #1a1008;
+    margin-bottom: 0.25em;
+    letter-spacing: -0.02em;
+    line-height: 1.2;
+}
+
+/* Zwischentitel und Post-Titel: eleganter als H1,
+   Spectral hat eine schöne halbfette Schnittlage. */
+h2, h3, h4, h5, h6 {
+    font-family: 'Spectral', Georgia, serif;
+    font-weight: 600;
+    color: #2a1f10;
+    line-height: 1.3;
+}
+
+h2 {
+    font-size: 1.4rem;
+    margin-top: 2em;
+    margin-bottom: 0.6em;
+    /* Dezente Trennlinie unter Post-Titeln */
+    border-bottom: 1px solid #d6c4a8;
+    padding-bottom: 0.3em;
+}
+
+h3 {
+    font-size: 1.1rem;
+    margin-top: 1.5em;
+    margin-bottom: 0.4em;
+}
+
+h4, h5, h6 {
+    font-size: 1rem;
+    margin-top: 1.2em;
+    margin-bottom: 0.4em;
+}
+
+/* =======================================================
+   FLIESSTEXT
+   text-align: justify + hyphens: auto → klassischer
+   Buchabsatz-Stil. Silbentrennung setzt lang="de" am
+   <html>-Tag voraus.
+
+   p + p nutzt Einzug statt Leerabstand zwischen Absätzen –
+   so wie im Buchsatz üblich. Der erste Absatz nach einer
+   Überschrift bekommt keinen Einzug, da der Kontextwechsel
+   durch die Überschrift bereits signalisiert wird.
+   ======================================================= */
+p {
+    margin-bottom: 1em;
+    text-align: justify;
+    hyphens: auto;
+}
+
+/* Folgeparagraf: Einzug statt Leerabstand */
+p + p {
+    text-indent: 1.5em;
+    margin-top: 0;
+}
+
+/* =======================================================
+   HR — dezenter Trennstrich (keine Win98-Inset-Optik)
+   ======================================================= */
+hr {
+    border: none;
+    border-top: 1px solid #d6c4a8;
+    margin: 1.5em 0;
+}
+
+/* =======================================================
+   DATUMSANGABE — für Blog-Post-Einträge
+   Spectral kursiv ist besonders ausdrucksstark.
+   display: block → nimmt eigene Zeile ein.
+   ======================================================= */
+.post-date {
+    font-family: 'Spectral', Georgia, serif;
+    font-style: italic;
+    font-size: 0.875rem;
+    color: #8a7060;
+    margin-bottom: 1.2em;
+    display: block;
+}
+
+/* =======================================================
+   UNTERTITEL — kurze Tagline unter dem H1
+   ======================================================= */
+.subtitle {
+    font-family: 'Spectral', Georgia, serif;
+    font-style: italic;
+    color: #6a5848;
+    font-size: 1rem;
+    margin-bottom: 1.5em;
+    /* Kein text-indent: kein vorheriger p-Absatz */
+}
+
+/* =======================================================
+   KOMMENTARBEREICH — zweite "Seite" direkt darunter
+   Gleiche Papierfarbe wie .page-wrapper, getrennt durch
+   einen 3px-Spalt (sichtbar auf dem dunklen Leder).
+   margin-left: 28px → bündig mit .page-wrapper.
+   ======================================================= */
+.comments-section {
+    background-color: #fef9f0;
+    padding: 36px 52px 36px 56px;
+    margin-top: 3px;
+    margin-left: 28px;
+    box-shadow:
+        2px 4px 0   rgba(0, 0, 0, 0.40),
+        4px 12px 32px rgba(0, 0, 0, 0.45);
+}
+
+/* h2 im Kommentarbereich: margin-top 0, damit kein
+   extra Weißraum am Seitenanfang entsteht. */
+.comments-section h2 {
+    margin-top: 0;
+}
+
+/* =======================================================
+   FOOTER — auf dem Leder-Hintergrund, nicht auf Papier
+   ======================================================= */
+footer {
+    text-align: center;
+    /* padding-left: bündig mit Papierblock einrücken */
+    padding: 20px 0 20px 28px;
+    color: #7a6a5a;
+    font-family: 'Lora', Georgia, serif;
+    font-size: 12px;
+    margin-top: 20px;
+}
+
+/* =======================================================
+   RESPONSIVE — Mobile-Anpassungen
+   Spirale verkleinern, Padding reduzieren.
+   ======================================================= */
+@media (max-width: 768px) {
+    main {
+        padding: 0 12px 0 16px;
+        margin: 20px auto 40px;
+    }
+
+    .page-wrapper {
+        padding: 28px 20px 28px 24px;
+        margin-left: 16px;
+    }
+
+    /* Spirale verkleinern, damit sie auf kleinen Screens
+       nicht zu viel Platz wegnimmt */
+    .page-wrapper::before {
+        left: -13px;
+        width: 12px;
+        background-size: 12px 20px;
+    }
+
+    .comments-section {
+        padding: 24px 20px;
+        margin-left: 16px;
+    }
+
+    h1 { font-size: 1.6rem; }
+    h2 { font-size: 1.2rem; }
+}
