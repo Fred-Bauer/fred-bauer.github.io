@@ -18,14 +18,16 @@
     
     <main class="fullscreen">
         <div class="sheet-wrapper">
-            <div class="sheet-container">
-                <div class="loading">Lade Daten...</div>
-            </div>
-            <!-- Statusbar als Geschwister von sheet-container, nicht darin:
-                 JS-Rendering überschreibt innerHTML von .sheet-container komplett.
-                 CSS übernimmt die Breitenausrichtung. -->
-            <div class="statusbar" id="statusbar">
-                <span class="statusbar-segment" id="statusbar-count">Bereit</span>
+            <!-- .sheet-frame begrenzt Breite für Container + Statusbar gemeinsam,
+                 damit beide immer gleich breit sind. JS schreibt nur in
+                 .sheet-container (innerHTML), Statusbar bleibt erhalten. -->
+            <div class="sheet-frame">
+                <div class="sheet-container">
+                    <div class="loading">Lade Daten...</div>
+                </div>
+                <div class="statusbar" id="statusbar">
+                    <span class="statusbar-segment" id="statusbar-count">Bereit</span>
+                </div>
             </div>
         </div>
     </main>

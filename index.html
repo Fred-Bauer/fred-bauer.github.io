@@ -41,29 +41,20 @@
         document.querySelectorAll('.index-links a').forEach(a => {
             a.setAttribute('data-icon', randomEmoji());
         });
-    });
 
-    /**
-     * Besuchszähler via localStorage.
-     *
-     * Beim ersten Besuch (kein Eintrag vorhanden) wird ein
-     * zufälliger Startoffset zwischen 10.000 und 50.000 gewählt,
-     * damit der Counter sofort realistisch wirkt.
-     * Bei jedem weiteren Besuch wird +1 addiert.
-     * Das Ergebnis wird sechsstellig mit führenden Nullen angezeigt.
-     */
-    (function () {
+        /* Besuchszähler: localStorage wird erst hier gelesen/geschrieben,
+           weil getElementById('#counter-digits') das DOM braucht.
+           Ein IIFE im <head> würde null zurückgeben — Element existiert
+           dort noch nicht. DOMContentLoaded garantiert Verfügbarkeit. */
         const KEY = 'visitor-count';
         const stored = localStorage.getItem(KEY);
-        /* Math.random() * 40000 + 10000 → gleichmäßig verteilt in [10000, 50000) */
         const count = stored !== null
             ? parseInt(stored, 10) + 1
             : Math.floor(Math.random() * 40000 + 10000);
         localStorage.setItem(KEY, count);
-        /* padStart(6, '0') stellt führende Nullen sicher */
         document.getElementById('counter-digits').textContent =
             String(count).padStart(6, '0');
-    })();
+    });
     </script>
 </head>
 <body class="page-index">

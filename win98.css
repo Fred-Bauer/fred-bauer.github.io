@@ -44,9 +44,16 @@ h1, h2, h3, h4, h5, h6 {
     overflow-y: auto;
 }
 
-.sheet-container {
+/* sheet-frame: gemeinsamer Breitenbegrenzer für Tabelle + Statusbar.
+   max-width hier statt auf sheet-container, damit die Statusbar
+   automatisch dieselbe Breite hat — ohne CSS-Duplikation. */
+.sheet-frame {
     max-width: 1400px;
     margin: 0 auto;
+}
+
+.sheet-container {
+    /* Breite kommt von .sheet-frame, kein eigenes max-width nötig */
 }
 
 main.fullscreen {
@@ -609,14 +616,6 @@ details.category > summary::-webkit-details-marker {
     color: #000000;
     flex-shrink: 0;
     user-select: none;
-    /* Breite an sheet-container angleichen, der max-width: 1400px
-       und margin: 0 auto hat — so bleibt die Statusbar gleich breit
-       wie die Tabelle, ohne im Container zu stecken (was innerHTML
-       beim Rendern überschreiben würde). */
-    max-width: 1400px;
-    margin-left: auto;
-    margin-right: auto;
-    box-sizing: border-box;
 }
 
 /* Jedes Segment hat einen Inset-Rahmen und festes Padding */
