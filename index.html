@@ -4,33 +4,103 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Fred Bauer</title>
-    <script>document.documentElement.classList.add('js');</script>
     <link rel="icon" type="image/png" href="Melone.png">
     <link rel="stylesheet" href="style.css">
-    <script src="typewriter.js" defer></script>
+    <link rel="stylesheet" href="geocities.css">
+    <script>
+    /**
+     * Zufälliges Emoji aus dem gesamten Unicode-Emoji-Raum.
+     *
+     * String.fromCodePoint() wandelt einen Integer-Codepoint direkt
+     * in den Unicode-Charakter um — auch für Supplementary-Plane-
+     * Zeichen (> U+FFFF), die JS intern als Surrogate-Pair speichert.
+     *
+     * Die Ranges decken die wichtigsten, dicht befüllten Emoji-Blöcke
+     * ab und lassen dünn besiedelte Blöcke (z.B. Alchemie U+1F700)
+     * weg, um "Tofu"-Rechtecke auf älteren Systemen zu minimieren.
+     */
+    function randomEmoji() {
+        const ranges = [
+            [0x1F300, 0x1F3FF], // Misc Symbols & Pictographs
+            [0x1F400, 0x1F4FF], // Tiere, Natur, Objekte
+            [0x1F500, 0x1F5FF], // Symbole, Uhren, Büros
+            [0x1F600, 0x1F64F], // Emoticons (Gesichter)
+            [0x1F680, 0x1F6FF], // Transport & Karten
+            [0x1F900, 0x1F9FF], // Supplemental Symbols
+            [0x1FA70, 0x1FAFF], // Symbols & Pictographs Extended-A
+            [0x2600,  0x26FF],  // Verschiedene Symbole
+            [0x2700,  0x27BF],  // Dingbats
+        ];
+        const r = ranges[Math.floor(Math.random() * ranges.length)];
+        return String.fromCodePoint(r[0] + Math.floor(Math.random() * (r[1] - r[0] + 1)));
+    }
+
+    document.addEventListener('DOMContentLoaded', function () {
+        /* Jeder Link bekommt sein eigenes unabhängig gezogenes Emoji —
+           kein Pool, keine Wiederholungsvermeidung nötig. */
+        document.querySelectorAll('.index-links a').forEach(a => {
+            a.setAttribute('data-icon', randomEmoji());
+        });
+    });
+
+    /**
+     * Besuchszähler via localStorage.
+     *
+     * Beim ersten Besuch (kein Eintrag vorhanden) wird ein
+     * zufälliger Startoffset zwischen 10.000 und 50.000 gewählt,
+     * damit der Counter sofort realistisch wirkt.
+     * Bei jedem weiteren Besuch wird +1 addiert.
+     * Das Ergebnis wird sechsstellig mit führenden Nullen angezeigt.
+     */
+    (function () {
+        const KEY = 'visitor-count';
+        const stored = localStorage.getItem(KEY);
+        /* Math.random() * 40000 + 10000 → gleichmäßig verteilt in [10000, 50000) */
+        const count = stored !== null
+            ? parseInt(stored, 10) + 1
+            : Math.floor(Math.random() * 40000 + 10000);
+        localStorage.setItem(KEY, count);
+        /* padStart(6, '0') stellt führende Nullen sicher */
+        document.getElementById('counter-digits').textContent =
+            String(count).padStart(6, '0');
+    })();
+    </script>
 </head>
-<body>
-    <header>
-        <nav>
-            <ul>
-                <li><a href="index.html" class="active">Home</a></li>
-                <!-- <li><a href="essays.html">Essays</a></li> -->
-                <li><a href="media.html">Media</a></li>
-            </ul>
-        </nav>
-    </header>
-    
+<body class="page-index">
+
+    <a class="site-logo" href="index.html" title="Startseite">
+        <img src="Melone.png" alt="Home">
+    </a>
+
+    <!-- Klassischer blinkender Baustellenbalken kommt in den Footer -->
     <main>
-        <section class="hero">
-            <h1>Willkommen</h1>
-            <p>Falls du dich verlaufen hast, hier geht's zum <a href="https://fred-bauer.github.io/kassenrechner/">Kassenrechner</a></p>
-        </section>
+        <!-- Kein Win98-Fenster mehr — freier GeoCities-Container -->
+        <div class="page-box">
+            <h1>fred-bauer.github.io</h1>
+            <ul class="index-links">
+                <li>
+                    <a href="media.html">Media</a>
+                    <div class="link-desc">Bücher, Filme, Serien, Spiele</div>
+                </li>
+                <li>
+                    <a href="https://fred-bauer.github.io/kassenrechner/">Kassenrechner</a>
+                    <div class="link-desc">Externer Link zum Kassenrechner für den Kletterwald</div>
+                </li>
+            </ul>
+        </div>
     </main>
-    
-    <!-- Floating Comment Button -->
-    <!-- <a href="#comments" class="floating-comment-btn" title="Kommentar hinterlassen">💬</a> -->
-    
+
+    <!-- Dekorativer Besuchszähler via localStorage.
+         Jeder Browser zählt seine eigenen Besuche.
+         Ein fester Startoffset sorgt dafür, dass der Counter
+         sofort nach einer plausiblen Zahl aussieht. -->
+    <div class="visitor-counter">
+        <div class="counter-label">You are visitor number</div>
+        <div class="counter-digits" id="counter-digits">000000</div>
+    </div>
+
     <footer>
+        <div class="under-construction">🚧 UNDER CONSTRUCTION 🚧</div>
         <p>&copy; 2025 Fred Bauer | <strong>Impressum:</strong> Fred Bauer, einfacheinfred@gmail.com</p>
     </footer>
 </body>

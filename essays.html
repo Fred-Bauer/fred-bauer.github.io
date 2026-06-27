@@ -9,24 +9,42 @@
     <link rel="stylesheet" href="style.css">
 </head>
 <body>
-    <header>
-        <nav>
-            <ul>
-                <li><a href="index.html">Home</a></li>
-                <!-- <li><a href="essays.html" class="active">Essays</a></li> -->
-                <li><a href="media.html">Media</a></li>
-            </ul>
-        </nav>
-    </header>
+    <!-- Melone = fester Link zurück zur Startseite -->
+    <a class="site-logo" href="index.html" title="Startseite">
+        <img src="Melone.png" alt="Home">
+    </a>
     
     <main>
-        <section class="hero">
-            <h1>Essays</h1>
-            <p>Hier fang ich irgendwann an, Essays abzulegen...</p>
-        </section>
+        <div class="window">
+            <div class="window-titlebar">
+                <span class="window-title">📄 Essays — Fred Bauer</span>
+                <div class="window-controls">
+                    <span class="win-btn">_</span>
+                    <span class="win-btn">□</span>
+                    <span class="win-btn">×</span>
+                </div>
+            </div>
+            <div class="window-content">
+                <section class="hero">
+                    <h1>Essays</h1>
+                    <hr>
+                    <p>Hier fang ich irgendwann an, Essays abzulegen...</p>
+                </section>
+            </div>
+        </div>
         
         <!-- Giscus Comments -->
-        <section class="comments-section" id="comments">
+        <div class="window">
+            <div class="window-titlebar">
+                <span class="window-title">💬 Kommentare</span>
+                <div class="window-controls">
+                    <span class="win-btn">_</span>
+                    <span class="win-btn">□</span>
+                    <span class="win-btn">×</span>
+                </div>
+            </div>
+            <div class="window-content">
+                <section class="comments-section" id="comments">
             <h2>Kommentare</h2>
             <script src="https://giscus.app/client.js"
                     data-repo="Fred-Bauer/fred-bauer.github.io"
@@ -44,7 +62,9 @@
                     crossorigin="anonymous"
                     async>
             </script>
-        </section>
+                </section>
+            </div>
+        </div>
     </main>
     
     <!-- Floating Comment Button -->
@@ -52,6 +72,7 @@
     
     <footer>
         <p>&copy; 2025 Fred Bauer</p>
+        <p>Letzte Aktualisierung: 2025</p>
     </footer>
 </body>
 </html>

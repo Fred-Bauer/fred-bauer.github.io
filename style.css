@@ -1,136 +1,348 @@
-@import url('https://fonts.googleapis.com/css2?family=Merriweather:wght@300;400;700&family=Spectral:wght@400;600;700&family=Lora:wght@400;500;600&display=swap');
+/* Lora: klassische Serifenschrift für generische Seiten (z.B. essays.html).
+   win98.css und geocities.css überschreiben body-font für ihre Seiten. */
+@import url('https://fonts.googleapis.com/css2?family=Lora:wght@400;700&display=swap');
 
+/* =======================================================
+   CSS CUSTOM PROPERTIES — Farb-Variablen pro Seite
+   Durch CSS-Variablen kann jede Seite ihr eigenes Thema
+   bekommen ohne den Strukturcode zu duplizieren.
+   :root      = Teal-Standard (gilt für media.html etc.)
+   body.page-X = Überschreibungen für spezifische Seiten
+   ======================================================= */
+:root {
+    /* Teal-Thema: Standard für media.html und unthemed Seiten */
+    --bg-color:       #050520;
+    --header-from:    #006666;
+    --header-to:      #004444;
+    --header-border:  #009999;
+    --titlebar-from:  #008080;
+    --titlebar-to:    #004c4c;
+    --link-color:     #00ccdd;
+    --link-visited:   #aa99ee;
+    --h1-color:       #006666;
+    --h1-shadow:      #ccffff;
+    --accent:         #008080;
+    --footer-color:   #aaffee;
+    --footer-border:  #006666;
+}
+
+/*
+   MELONEN-THEMA: index.html
+   Farben aus Melone.png abgeleitet:
+   - Dunkles Waldgrün (Außenschale):  #1b3a0e / #0a2005
+   - Mittleres Grün (Streifen):       #2d5018 / #3d7020
+   - Melonen-Rot (Fruchtfleisch):     #cc2020
+   - Helles Rosa (Schatten):          #ffcccc
+*/
+body.page-index {
+    --bg-color:       #020e02;
+    --header-from:    #1b3a0e;
+    --header-to:      #0a2005;
+    --header-border:  #3d7020;
+    --titlebar-from:  #2d5018;
+    --titlebar-to:    #0e2008;
+    --link-color:     #ff5555;
+    --link-visited:   #cc8888;
+    --h1-color:       #cc2020;
+    --h1-shadow:      #ffcccc;
+    --accent:         #cc2020;
+    --footer-color:   #aae080;
+    --footer-border:  #2d5018;
+}
+
+/* === RESET === */
 * {
     margin: 0;
     padding: 0;
     box-sizing: border-box;
 }
 
+/* =======================================================
+   BODY & STAR-HINTERGRUND
+   Drei überlagerte radial-gradient-Ebenen an
+   unterschiedlichen Größen und Offsets erzeugen
+   ein sternenartiges Punktmuster — ohne Bilder oder JS.
+   Die drei Ebenen bei 250px, 130px und 70px Raster
+   wirken auf den ersten Blick "zufällig".
+   ======================================================= */
 body {
-    font-family: 'Lora', serif;
-    line-height: 1.8;
-    color: #1a1a1a;
-    background-color: #e8dcc4;
-    background-image: 
-        repeating-linear-gradient(
-            0deg,
-            transparent,
-            transparent 31px,
-            rgba(139, 115, 85, 0.15) 31px,
-            rgba(139, 115, 85, 0.15) 32px
-        );
+    font-family: 'Lora', Georgia, serif;
+    font-size: 14px;
+    line-height: 1.6;
+    color: #000000;
+    background-color: var(--bg-color);
+    /* Sterne: gelbe Punkte auf drei überlagerten Rastergrößen.
+       Die goldgelben Farbtöne variieren leicht für mehr Natuerlichkeit. */
+    background-image:
+        radial-gradient(circle, rgba(255, 220,   0, 0.90) 1px, transparent 1px),
+        radial-gradient(circle, rgba(255, 200,  50, 0.65) 1px, transparent 1px),
+        radial-gradient(circle, rgba(255, 240, 120, 0.40) 1px, transparent 1px);
+    background-size: 250px 200px, 130px 90px, 70px 55px;
+    background-position: 0 0, 40px 25px, 80px 50px;
+    min-height: 100vh;
 }
 
-header {
-    background-color: #2d2520;
-    color: #e8dcc4;
-    padding: 1rem 0;
-    box-shadow: 0 3px 8px rgba(0,0,0,0.3);
-    border-bottom: 3px solid #8b7355;
+/* =======================================================
+   LINKS — klassisch blau + unterstrichen.
+   Auf dunklem Hintergrund nehmen wir helles Teal
+   statt reinem Blau, damit der Kontrast passt.
+   ======================================================= */
+a {
+    color: var(--link-color);
+    text-decoration: underline;
 }
 
-nav ul {
-    list-style: none;
-    display: flex;
-    justify-content: center;
-    gap: 2rem;
+a:visited {
+    /* Besucht: leicht abgedämpfte Variante der Link-Farbe */
+    color: var(--link-visited);
 }
 
-nav a {
-    color: #e8dcc4;
+a:hover {
+    color: #ffffff;
+}
+
+/* =======================================================
+   SITE-LOGO — Melone oben links, fest positioniert.
+   Dient auf Unterseiten als "zurück zur Startseite"-Link.
+   Die leichte Drop-Shadow hilft, das Bild auf dunklem
+   Hintergrund sichtbar abzuheben.
+   ======================================================= */
+.site-logo {
+    position: fixed;
+    top: 8px;
+    left: 10px;
+    z-index: 1000;
+    display: block;
+    line-height: 0; /* verhindert extra Whitespace unter dem <img> */
     text-decoration: none;
-    padding: 0.5rem 1rem;
-    transition: all 0.3s;
-    border-radius: 2px;
-    border: 1px solid transparent;
-    text-transform: uppercase;
-    letter-spacing: 1px;
-    font-size: 0.9rem;
 }
 
-nav a:hover,
-nav a.active {
-    background-color: #3d3530;
-    border-color: #8b7355;
-    color: #f5e6d3;
+.site-logo img {
+    width: 48px;
+    height: 48px;
+    object-fit: contain;
+    filter: drop-shadow(0 1px 3px rgba(0,0,0,0.6));
+    transition: none;
 }
 
+/* Keine CSS-Transitions für Hover — 90er-Stil */
+.site-logo:hover img {
+    filter: drop-shadow(0 0 5px rgba(255, 255, 255, 0.8));
+}
+
+/* =======================================================
+   INDEX-LINKLISTE — einfache Liste auf der Startseite.
+   Styled wie ein klassisches "Site Navigation"-Fenster.
+   ======================================================= */
+.index-links {
+    list-style: none;
+    padding: 0;
+    margin: 0;
+}
+
+/* Jeder Link als eigene Zeile mit Raised-Button-Look */
+.index-links li {
+    border-bottom: 1px solid #c0c0c0;
+}
+
+.index-links li:last-child {
+    border-bottom: none;
+}
+
+.index-links a {
+    display: block;
+    padding: 8px 12px;
+    font-family: Verdana, Arial, sans-serif;
+    font-size: 14px;
+    color: var(--link-color);
+    text-decoration: none;
+    background-color: #f0f0f0;
+    border-top: 1px solid #ffffff;
+    border-left: 1px solid #ffffff;
+    border-bottom: 1px solid #808080;
+    border-right: 1px solid #808080;
+    margin-bottom: 4px;
+}
+
+.index-links a:hover {
+    background-color: #e0e0e0;
+    /* Sunken-Effekt beim Hover: Ränder invertieren */
+    border-top: 1px solid #808080;
+    border-left: 1px solid #808080;
+    border-bottom: 1px solid #ffffff;
+    border-right: 1px solid #ffffff;
+    color: var(--link-color);
+    text-decoration: none;
+}
+
+/* Beschreibungstext unter einem Link */
+.index-links .link-desc {
+    font-size: 11px;
+    color: #555555;
+    margin-top: 2px;
+}
+
+/* =======================================================
+   MAIN LAYOUT — top-padding wegen fixed Logo
+   ======================================================= */
 main {
-    max-width: 850px;
-    margin: 2rem auto;
-    padding: 0 1rem;
+    max-width: 800px;
+    margin: 20px auto;
+    padding: 0 10px 0 70px; /* links: Platz für das 48px-Logo + Abstand */
 }
 
+/* =======================================================
+   WINDOW CHROME
+   Inhaltsbereiche als Win98-Fenster:
+   - .window           äußerer Rahmen mit Raised-Effekt
+   - .window-titlebar  Teal-Titelleiste
+   - .window-controls  dekorative _ □ × Buttons
+   - .window-content   weißer Fensterinhalt
+   ======================================================= */
+.window {
+    /* Äußerer Raised-Border: simuliert einen Fensterrahmen */
+    border-top: 2px solid #dfdfdf;
+    border-left: 2px solid #dfdfdf;
+    border-bottom: 2px solid #404040;
+    border-right: 2px solid #404040;
+    margin-bottom: 16px;
+}
+
+.window-titlebar {
+    background: linear-gradient(to right, var(--titlebar-from), var(--titlebar-to));
+    padding: 3px 6px;
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    user-select: none; /* Titeltext soll nicht versehentlich markiert werden */
+}
+
+.window-title {
+    color: #ffffff;
+    font-size: 12px;
+    font-weight: bold;
+    /* Standard: Verdana — Comic Sans nur auf der Index-Seite */
+    font-family: Verdana, Arial, sans-serif;
+    letter-spacing: 0.5px;
+}
+
+body.page-index .window-title {
+    font-family: 'Comic Sans MS', 'Comic Sans', cursive;
+}
+
+/* Dekorative Fenster-Steuerelemente (nicht funktional) */
+.window-controls {
+    display: flex;
+    gap: 2px;
+}
+
+/* 16×14px Grau-Kästchen mit Raised-Border.
+   cursor: default verhindert den Hand-Cursor — sie sind Dekoration. */
+.win-btn {
+    display: inline-flex;
+    width: 16px;
+    height: 14px;
+    align-items: center;
+    justify-content: center;
+    background-color: #c0c0c0;
+    border-top: 1px solid #ffffff;
+    border-left: 1px solid #ffffff;
+    border-bottom: 1px solid #404040;
+    border-right: 1px solid #404040;
+    font-size: 10px;
+    font-family: Verdana, sans-serif;
+    color: #000000;
+    cursor: default;
+    line-height: 1;
+}
+
+/* Fensterinhalt: weißer Hintergrund + Inset-Border */
+.window-content {
+    background-color: #ffffff;
+    border-top: 2px solid #808080;
+    border-left: 2px solid #808080;
+    border-bottom: 2px solid #dfdfdf;
+    border-right: 2px solid #dfdfdf;
+    padding: 20px;
+}
+
+/* =======================================================
+   HERO (jetzt innerhalb von .window-content)
+   ======================================================= */
 .hero {
-    background-color: #f5e6d3;
-    padding: 3rem 2rem;
-    border-radius: 2px;
-    box-shadow: 
-        0 2px 4px rgba(0,0,0,0.1),
-        inset 0 0 100px rgba(139, 115, 85, 0.05);
-    margin-bottom: 2rem;
-    text-align: center;
-    border: 1px solid #d4c4a8;
-    position: relative;
+    /* Im Fenster-Kontext kein eigenes Padding mehr nötig */
 }
 
-.hero::before {
-    content: '';
-    position: absolute;
-    top: 0;
-    left: 0;
-    right: 0;
-    bottom: 0;
-    background-image: 
-        radial-gradient(circle at 20% 50%, transparent 0%, rgba(139, 115, 85, 0.02) 100%);
-    pointer-events: none;
+/* =======================================================
+   TYPOGRAFIE
+   Standard: Verdana (Win98-Systemfont) für alle Seiten.
+   Comic Sans nur auf index (body.page-index) — dort passt
+   es zum Wassermelonen/GeoCities-Thema.
+   ======================================================= */
+h1, h2, h3 {
+    font-family: Verdana, Arial, sans-serif;
+}
+
+/* Index-Seite: Comic Sans als bewusste Stilentscheidung */
+body.page-index h1,
+body.page-index h2,
+body.page-index h3 {
+    font-family: 'Comic Sans MS', 'Comic Sans', cursive;
 }
 
 .hero h1 {
-    font-family: 'Merriweather', serif;
-    color: #2d2520;
-    font-size: 2.8rem;
-    margin-bottom: 0.5rem;
-    text-shadow: 1px 1px 2px rgba(139, 115, 85, 0.1);
-    font-weight: 700;
-    letter-spacing: -0.5px;
+    color: var(--h1-color);
+    font-size: 2rem;
+    margin-bottom: 12px;
+    text-shadow: 1px 1px 0 var(--h1-shadow); /* Sanfter Schatten: 90er-Glow-Look */
+    font-weight: bold;
+    letter-spacing: normal;
 }
 
 .hero p {
-    color: #5a4a3a;
-    font-size: 1.2rem;
-    font-style: italic;
+    font-size: 14px;
+    color: #1a1a1a;
+    font-style: normal;
 }
 
+/* Klassische Inset-HR — typisch für Win98-Webseiten */
+hr {
+    border: none;
+    border-top: 2px inset #c0c0c0;
+    margin: 14px 0;
+}
+
+/* =======================================================
+   GENERISCHE INHALTSBOXEN (für essays.html etc.)
+   ======================================================= */
 .content {
-    background-color: #f5e6d3;
-    padding: 2.5rem;
-    border-radius: 2px;
-    box-shadow: 
-        0 2px 4px rgba(0,0,0,0.1),
-        inset 0 0 100px rgba(139, 115, 85, 0.05);
-    border: 1px solid #d4c4a8;
-    margin-bottom: 2rem;
+    background-color: #ffffff;
+    padding: 20px;
+    border-top: 2px solid #808080;
+    border-left: 2px solid #808080;
+    border-bottom: 2px solid #dfdfdf;
+    border-right: 2px solid #dfdfdf;
+    margin-bottom: 16px;
 }
 
 .content h2 {
-    font-family: 'Spectral', serif;
-    color: #2d2520;
-    margin-bottom: 1.2rem;
-    font-weight: 600;
-    border-bottom: 2px solid #8b7355;
-    padding-bottom: 0.5rem;
+    font-family: Verdana, Arial, sans-serif;
+    color: var(--h1-color);
+    margin-bottom: 12px;
+    border-bottom: 2px solid var(--accent);
+    padding-bottom: 6px;
 }
 
+/* Essay-Styles bleiben strukturell erhalten, nur Farben angepasst */
 .essay-list {
     display: flex;
     flex-direction: column;
-    gap: 2.5rem;
+    gap: 2rem;
 }
 
 .essay-preview {
-    padding-bottom: 2.5rem;
-    border-bottom: 1px dashed #c4b49d;
+    padding-bottom: 2rem;
+    border-bottom: 1px dashed #c0c0c0;
 }
 
 .essay-preview:last-child {
@@ -139,68 +351,81 @@ main {
 }
 
 .essay-preview h2 {
-    font-family: 'Spectral', serif;
-    color: #2d2520;
+    color: var(--h1-color);
     margin-bottom: 0.5rem;
     border-bottom: none;
     padding-bottom: 0;
 }
 
 .essay-preview .date {
-    color: #8b7355;
+    color: var(--accent);
     font-size: 0.85rem;
     margin-bottom: 1rem;
-    text-transform: uppercase;
-    letter-spacing: 0.5px;
-    font-family: 'Spectral', serif;
+    font-family: Verdana, Arial, sans-serif;
 }
 
 .essay-preview p {
     text-indent: 2rem;
 }
 
+/* =======================================================
+   FOOTER
+   Text auf dunklem Hintergrund in hellem Teal.
+   "Letzte Aktualisierung" ist der klassische Retro-Touch
+   den fast jede persönliche 90er-Website hatte.
+   ======================================================= */
 footer {
     text-align: center;
-    padding: 2rem 0;
-    color: #5a4a3a;
-    margin-top: 3rem;
-    font-size: 0.9rem;
-    border-top: 1px solid #8b7355;
+    padding: 12px 0;
+    color: var(--footer-color);
+    font-size: 12px;
+    font-family: Verdana, Arial, sans-serif;
+    margin-top: 8px;
+    border-top: 1px solid var(--footer-border);
 }
 
-/* Floating Comment Button */
+/* =======================================================
+   FLOATING COMMENT BUTTON (bleibt funktional)
+   Im Win98-Stil: grau, raised, kein border-radius.
+   ======================================================= */
 .floating-comment-btn {
     position: fixed;
     bottom: 30px;
     right: 30px;
     width: 60px;
     height: 60px;
-    background-color: #2d2520;
-    color: #e8dcc4;
-    border-radius: 50%;
+    background-color: #c0c0c0;
+    color: #000000;
+    border-top: 2px solid #ffffff;
+    border-left: 2px solid #ffffff;
+    border-bottom: 2px solid #404040;
+    border-right: 2px solid #404040;
+    border-radius: 0;
     display: flex;
     align-items: center;
     justify-content: center;
     font-size: 1.8rem;
     text-decoration: none;
-    box-shadow: 0 4px 12px rgba(0, 0, 0, 0.3);
-    transition: all 0.3s ease;
     z-index: 999;
-    border: 2px solid #8b7355;
 }
 
 .floating-comment-btn:hover {
-    background-color: #3d3530;
-    transform: scale(1.1) translateY(-2px);
-    box-shadow: 0 6px 16px rgba(0, 0, 0, 0.4);
+    background-color: #d4d0c8;
 }
 
+/* "Gedrückt": Ränder invertieren = Sunken-Effekt */
 .floating-comment-btn:active {
-    transform: scale(1.05) translateY(0);
+    border-top: 2px solid #404040;
+    border-left: 2px solid #404040;
+    border-bottom: 2px solid #ffffff;
+    border-right: 2px solid #ffffff;
 }
 
-/* Typewriter Animation */
-
+/* =======================================================
+   TYPEWRITER — JavaScript-gestützte Fade-In-Effekte.
+   Diese Klassen bleiben unverändert, damit typewriter.js
+   weiterhin funktioniert.
+   ======================================================= */
 .typewriter.typing h1,
 .typewriter.typing h2,
 .typewriter.typing p,
@@ -216,66 +441,66 @@ footer {
 }
 
 @keyframes fadeInText {
-    from { 
+    from {
         opacity: 0;
         transform: translateY(10px);
     }
-    to { 
+    to {
         opacity: 1;
         transform: translateY(0);
     }
 }
 
-/* Prevent paragraph flash before JS sets timings: hide paras in .typewriter only when JS is enabled */
+/* Verhindert Paragraph-Flash bevor JS die Timings setzt */
 html.js .typewriter p,
 html.js .typewriter .date {
     opacity: 0;
     transition: opacity 300ms ease-out;
 }
 
-/* Giscus Comments Section */
+/* =======================================================
+   GISCUS KOMMENTARBEREICH
+   ======================================================= */
 .comments-section {
-    background-color: #f5e6d3;
-    padding: 2.5rem;
-    border-radius: 2px;
-    box-shadow: 
-        0 2px 4px rgba(0,0,0,0.1),
-        inset 0 0 100px rgba(139, 115, 85, 0.05);
-    border: 1px solid #d4c4a8;
-    margin: 2rem auto;
-    max-width: 850px;
+    background-color: #ffffff;
+    padding: 20px;
+    border-top: 2px solid #808080;
+    border-left: 2px solid #808080;
+    border-bottom: 2px solid #dfdfdf;
+    border-right: 2px solid #dfdfdf;
+    margin: 16px auto;
+    max-width: 800px;
 }
 
 .comments-section h2 {
-    font-family: 'Spectral', serif;
-    color: #2d2520;
+    font-family: Verdana, Arial, sans-serif;
+    color: var(--h1-color);
     margin-bottom: 1.5rem;
-    border-bottom: 2px solid #8b7355;
+    border-bottom: 2px solid var(--accent);
     padding-bottom: 0.5rem;
 }
 
+/* =======================================================
+   RESPONSIVE — minimale Anpassungen für Mobile.
+   90er-Sites waren nicht responsive, aber wir wollen
+   die Seite trotzdem benutzbar halten.
+   ======================================================= */
 @media (max-width: 768px) {
     nav ul {
-        gap: 1rem;
+        gap: 4px;
+        flex-wrap: wrap;
     }
-    
+
     .hero h1 {
-        font-size: 2rem;
+        font-size: 1.5rem;
     }
-    
-    .hero p {
-        font-size: 1rem;
-    }
-    
+
     main {
-        margin: 1rem auto;
+        margin: 10px auto;
     }
-    
-    .hero {
-        padding: 2rem 1rem;
-    }
-    
-    .content {
-        padding: 1.5rem;
+
+    .window-content {
+        padding: 14px;
     }
 }
+

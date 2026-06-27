@@ -1,0 +1,659 @@
+/* =====================================================
+   WIN98.CSS — Stile für Win98-Subpages
+   Design: Windows 98 authentisch
+   Überschriften: Tahoma (Win98/2000-Systemfont)
+   Fließtext: Verdana
+   Hintergrund: #008080 Teal-Desktop (Win98-Standard)
+   ===================================================== */
+
+/* Win98 Standard-Desktopfarbe als Seitenhintergrund.
+   background-image: none überschreibt den Sternen-Effekt
+   aus style.css, der für die Index-Seite gedacht ist. */
+html, body {
+    height: 100%;
+    margin: 0;
+    padding: 0;
+}
+
+body {
+    background-color: #008080;
+    background-image: none;
+    font-family: Verdana, Arial, sans-serif;
+    font-size: 13px;
+}
+
+/* Tahoma für alle Überschriften: kompakter als Verdana,
+   exakt der Systemfont den Windows 98 SE und 2000 in
+   Dialogfenstern, Titelleisten und Toolbars verwendeten. */
+h1, h2, h3, h4, h5, h6 {
+    font-family: Tahoma, Verdana, Arial, sans-serif;
+}
+
+/* =====================================================
+   LAYOUT: Vollbild-Sheet
+   Das Sheet-Wrapper füllt die ganze Sichtfenster-Höhe
+   und scrollt intern. 70px links: Platz für das Logo.
+   ===================================================== */
+.sheet-wrapper {
+    position: relative;
+    width: 100%;
+    height: calc(100vh - 40px); /* 40px: footer */
+    margin: 0;
+    padding: 20px 20px 20px 70px;
+    box-sizing: border-box;
+    overflow-y: auto;
+}
+
+.sheet-container {
+    max-width: 1400px;
+    margin: 0 auto;
+}
+
+main.fullscreen {
+    max-width: none;
+    margin: 0;
+    padding: 0;
+}
+
+/* Footer direkt nach dem fullscreen-Main braucht
+   kein extra margin-top */
+footer {
+    display: block;
+    text-align: center;
+    padding: 8px 0;
+    margin-top: 0;
+}
+
+/* =====================================================
+   TAB CONTROL
+   Win98-Tabs: Raised-Buttons die an einen Tab-Dialog
+   angedockt sind. Der aktive Tab "überdeckt" die
+   border-bottom des .sheet-tabs Containers (padding-bottom
+   + z-index Trick).
+   ===================================================== */
+.sheet-tabs {
+    display: flex;
+    gap: 4px;
+    margin-bottom: 0;
+    /* Grau statt Teal: hebt sich vom Teal-Desktop ab */
+    border-bottom: 2px solid #808080;
+    flex-wrap: wrap;
+    align-items: flex-end;
+}
+
+.sheet-tab {
+    font-family: Verdana, Arial, sans-serif;
+    background: #c0c0c0;
+    color: #000000;
+    border: none;
+    padding: 5px 16px;
+    cursor: pointer;
+    font-size: 13px;
+    font-weight: bold;
+    transition: none; /* Win98 kannte keine CSS-Transitions */
+    border-top: 2px solid #ffffff;
+    border-left: 2px solid #ffffff;
+    border-bottom: none;
+    border-right: 2px solid #808080;
+    position: relative;
+    bottom: 0;
+}
+
+.sheet-tab:hover {
+    background: #d4d0c8;
+}
+
+/* Aktiver Tab: weiß + ragt 2px über die Tab-Leiste hinaus,
+   was die border-bottom optisch unterbricht */
+.sheet-tab.active {
+    background: #ffffff;
+    border-top: 2px solid #ffffff;
+    border-left: 2px solid #ffffff;
+    border-right: 2px solid #808080;
+    border-bottom: 2px solid #ffffff;
+    font-weight: bold;
+    z-index: 1;
+    padding-bottom: 7px;
+}
+
+/* =====================================================
+   SHEET CONTENT — Inhaltsbereich unter den Tabs
+   Inset-Border: dunkel oben/links, hell unten/rechts
+   (umgekehrter Raised-Effekt = "vertieftes Feld")
+   ===================================================== */
+.sheet-content {
+    display: none;
+    background: #ffffff;
+    padding: 20px;
+    border-top: 2px solid #808080;
+    border-left: 2px solid #808080;
+    border-bottom: 2px solid #dfdfdf;
+    border-right: 2px solid #dfdfdf;
+}
+
+.sheet-content.active {
+    display: block;
+}
+
+/* =====================================================
+   TMDB MODAL — Film/Serien-Detailansicht
+   Aufgebaut wie ein Win98-Fenster: teal Titelleiste,
+   graue Außenfläche, weißer Inhaltsbereich.
+   ===================================================== */
+.tmdb-modal-backdrop {
+    position: fixed;
+    inset: 0;
+    background: rgba(0, 0, 0, 0.65);
+    display: none;
+    align-items: center;
+    justify-content: center;
+    z-index: 1200;
+    padding: 20px;
+}
+
+.tmdb-modal-backdrop.active {
+    display: flex;
+}
+
+.tmdb-modal {
+    background: #c0c0c0;
+    max-width: 820px;
+    max-height: 90vh;
+    width: 100%;
+    /* Raised outer frame */
+    border-top: 2px solid #dfdfdf;
+    border-left: 2px solid #dfdfdf;
+    border-bottom: 2px solid #404040;
+    border-right: 2px solid #404040;
+    box-shadow: 4px 4px 0 rgba(0, 0, 0, 0.5);
+    overflow: hidden;
+    display: flex;
+    flex-direction: column;
+    font-family: Verdana, Arial, sans-serif;
+}
+
+.tmdb-modal header {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    padding: 3px 6px;
+    background: linear-gradient(to right, #008080, #004c4c);
+    color: #ffffff;
+    flex-shrink: 0;
+}
+
+.tmdb-modal header h3 {
+    margin: 0;
+    font-family: Tahoma, Verdana, Arial, sans-serif;
+    font-size: 12px;
+    font-weight: bold;
+}
+
+/* Schließen-Knopf: kleiner Raised-Button */
+.tmdb-close {
+    border-top: 1px solid #ffffff;
+    border-left: 1px solid #ffffff;
+    border-bottom: 1px solid #404040;
+    border-right: 1px solid #404040;
+    background: #c0c0c0;
+    color: #000000;
+    font-size: 12px;
+    cursor: pointer;
+    width: 16px;
+    height: 14px;
+    padding: 0;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+}
+
+.tmdb-close:active {
+    /* Gedrückt: Ränder invertieren */
+    border-top: 1px solid #404040;
+    border-left: 1px solid #404040;
+    border-bottom: 1px solid #ffffff;
+    border-right: 1px solid #ffffff;
+}
+
+/* Inhaltsbereich des Modals: weißes inset-Feld */
+.tmdb-body {
+    display: grid;
+    grid-template-columns: 180px 1fr;
+    gap: 18px;
+    padding: 10px 14px 14px;
+    overflow-y: auto;
+    background: #ffffff;
+    border-top: 2px solid #808080;
+    border-left: 2px solid #808080;
+    border-bottom: 2px solid #dfdfdf;
+    border-right: 2px solid #dfdfdf;
+    margin: 6px;
+}
+
+.tmdb-body.no-poster {
+    grid-template-columns: 1fr;
+}
+
+.tmdb-poster {
+    width: 100%;
+    background: #ddd;
+    object-fit: cover;
+    min-height: 260px;
+}
+
+.tmdb-body.no-poster .tmdb-poster {
+    display: none;
+}
+
+.tmdb-meta {
+    font-size: 13px;
+    color: #000000;
+    line-height: 1.55;
+    font-family: Verdana, Arial, sans-serif;
+}
+
+.tmdb-tags {
+    margin: 6px 0 10px;
+    display: flex;
+    flex-wrap: wrap;
+    gap: 6px;
+}
+
+/* Tags als kleine Raised-Buttons */
+.tmdb-tag {
+    background: #c0c0c0;
+    border-top: 1px solid #ffffff;
+    border-left: 1px solid #ffffff;
+    border-bottom: 1px solid #404040;
+    border-right: 1px solid #404040;
+    padding: 2px 8px;
+    font-size: 12px;
+    font-family: Verdana, Arial, sans-serif;
+}
+
+.tmdb-section {
+    margin-top: 10px;
+}
+
+.tmdb-section h4 {
+    margin: 0 0 6px;
+    font-family: Tahoma, Verdana, Arial, sans-serif;
+    color: #000000;
+    font-size: 12px;
+    font-weight: bold;
+}
+
+.tmdb-providers {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 6px;
+}
+
+/* Streaming-Provider als teal Raised-Buttons */
+.tmdb-provider {
+    background: #008080;
+    color: #ffffff;
+    padding: 3px 10px;
+    font-size: 12px;
+    font-family: Verdana, Arial, sans-serif;
+    border-top: 1px solid #00aaaa;
+    border-left: 1px solid #00aaaa;
+    border-bottom: 1px solid #004444;
+    border-right: 1px solid #004444;
+}
+
+/* Navy statt Teal: mehr Kontrast auf weißem Hintergrund */
+.tmdb-rating {
+    font-weight: bold;
+    color: #000080;
+    font-family: Verdana, Arial, sans-serif;
+}
+
+.tmdb-loading {
+    text-align: center;
+    padding: 32px;
+    font-family: Verdana, Arial, sans-serif;
+}
+
+@media (max-width: 700px) {
+    .tmdb-body {
+        grid-template-columns: 1fr;
+    }
+
+    .tmdb-modal {
+        max-height: 90vh;
+        overflow-y: auto;
+    }
+}
+
+/* =====================================================
+   KATEGORIE-GRUPPEN
+   <details>/<summary> im Stil eines Win98-GroupBox:
+   Grauer Raised-Header, weißer Innenbereich.
+   ===================================================== */
+.category-group {
+    margin-bottom: 10px;
+    border-top: 2px solid #808080;
+    border-left: 2px solid #808080;
+    border-bottom: 2px solid #dfdfdf;
+    border-right: 2px solid #dfdfdf;
+    background: #ffffff;
+}
+
+details.category {
+    border-bottom: 1px solid #c0c0c0;
+}
+
+details.category:last-child {
+    border-bottom: none;
+}
+
+details.category[open] > summary .chevron {
+    transform: rotate(90deg);
+}
+
+details.category > summary {
+    list-style: none;
+    cursor: pointer;
+    padding: 6px 12px;
+    font-family: Verdana, Arial, sans-serif;
+    font-weight: bold;
+    font-size: 12px;
+    display: flex;
+    align-items: center;
+    gap: 10px;
+    /* Raised-Button-Optik für den Gruppenheader */
+    background: #c0c0c0;
+    border-top: 1px solid #ffffff;
+    border-left: 1px solid #ffffff;
+    border-bottom: 1px solid #808080;
+    user-select: none;
+}
+
+details.category > summary:hover {
+    background: #d4d0c8;
+}
+
+details.category > summary::-webkit-details-marker {
+    display: none;
+}
+
+/* CSS-Dreieck als Expand-Indikator (kein Unicode-Zeichen,
+   damit es auf jedem OS gleich aussieht) */
+.chevron {
+    width: 0;
+    height: 0;
+    border-top: 5px solid transparent;
+    border-bottom: 5px solid transparent;
+    border-left: 7px solid #000080; /* navy: gut sichtbar auf grau */
+    flex-shrink: 0;
+    /* transition: none — Win98 hatte keine Animationen */
+}
+
+/* Anzahl-Badge: navy statt teal */
+.count-badge {
+    margin-left: auto;
+    background: #000080;
+    color: #ffffff;
+    padding: 1px 8px;
+    font-weight: bold;
+    font-size: 11px;
+    font-family: Verdana, Arial, sans-serif;
+}
+
+/* =====================================================
+   ITEM CARDS
+   Raised-Karten mit Win98-ListView-Selektion:
+   Hover = navy Hintergrund + weißer Text.
+   Das ist exakt so, wie Win98 Explorer Einträge
+   beim Überfahren hervorhebt.
+   ===================================================== */
+.item-list {
+    list-style: none;
+    margin: 0;
+    padding: 10px 14px 16px 14px;
+    display: grid;
+    grid-template-columns: repeat(2, 1fr);
+    gap: 8px;
+}
+
+.item {
+    background: #ffffff;
+    border-top: 1px solid #808080;
+    border-left: 1px solid #808080;
+    border-bottom: 1px solid #dfdfdf;
+    border-right: 1px solid #dfdfdf;
+    padding: 8px 10px;
+    cursor: pointer;
+}
+
+/* Win98 ListView-Selektion: navy + weiß */
+.item:hover {
+    background: #000080;
+    border-color: #000060;
+}
+
+.item:hover .item-title,
+.item:hover .item-meta,
+.item:hover .rating-stars {
+    color: #ffffff;
+}
+
+.item:active {
+    background: #000060;
+}
+
+.item-header {
+    display: flex;
+    align-items: baseline;
+    justify-content: space-between;
+    gap: 12px;
+    margin-bottom: 4px;
+}
+
+.item-title {
+    font-family: Verdana, Arial, sans-serif;
+    color: #000000;
+    font-weight: bold;
+    font-size: 13px;
+    margin-bottom: 2px;
+}
+
+.item-meta {
+    font-family: Verdana, Arial, sans-serif;
+    color: #444444;
+    font-size: 11px;
+}
+
+/* =====================================================
+   TABELLE
+   Win98 ListView: graue Raised-Spaltenheader (wie in
+   Windows Explorer Detailansicht), einfache Zeilen.
+   ===================================================== */
+.sheet-table {
+    width: 100%;
+    border-collapse: collapse;
+    font-family: Verdana, Arial, sans-serif;
+    font-size: 13px;
+    background: #ffffff;
+}
+
+/* Spaltenheader als Raised-Buttons — authentischer
+   Win98 ListView-Stil */
+.sheet-table thead {
+    background: #c0c0c0;
+}
+
+.sheet-table th {
+    padding: 4px 12px;
+    text-align: left;
+    font-family: Verdana, Arial, sans-serif;
+    font-weight: bold;
+    font-size: 12px;
+    color: #000000;
+    border-top: 1px solid #ffffff;
+    border-left: 1px solid #ffffff;
+    border-bottom: 1px solid #808080;
+    border-right: 1px solid #808080;
+    white-space: nowrap;
+}
+
+.sheet-table td {
+    padding: 4px 12px;
+    border-bottom: 1px solid #e0e0e0;
+    color: #000000;
+    line-height: 1.5;
+}
+
+/* Selektion in Tabellen: navy wie bei den Karten */
+.sheet-table tbody tr:hover td {
+    background: #000080;
+    color: #ffffff;
+    border-bottom-color: #000080;
+}
+
+.sheet-table tbody tr:last-child td {
+    border-bottom: none;
+}
+
+.rating-stars {
+    margin-left: 4px;
+    letter-spacing: 1px;
+    color: #000080;
+    font-weight: bold;
+    font-family: Verdana, Arial, sans-serif;
+}
+
+/* =====================================================
+   LOADING & ERROR STATES
+   ===================================================== */
+.loading {
+    text-align: center;
+    padding: 40px 20px;
+    font-family: Verdana, Arial, sans-serif;
+    font-size: 14px;
+    color: #000000;
+    background: #c0c0c0;
+    border-top: 2px solid #808080;
+    border-left: 2px solid #808080;
+    border-bottom: 2px solid #dfdfdf;
+    border-right: 2px solid #dfdfdf;
+}
+
+.error {
+    background: #ffffff;
+    border-top: 2px solid #808080;
+    border-left: 2px solid #808080;
+    border-bottom: 2px solid #dfdfdf;
+    border-right: 2px solid #dfdfdf;
+    color: #cc0000;
+    padding: 20px;
+    margin: 10px 0;
+    font-family: Verdana, Arial, sans-serif;
+    font-size: 13px;
+}
+
+/* =====================================================
+   KOMMENTARBEREICH (Giscus)
+   ===================================================== */
+.comments-section {
+    background: #ffffff;
+    border-top: 2px solid #808080;
+    border-left: 2px solid #808080;
+    border-bottom: 2px solid #dfdfdf;
+    border-right: 2px solid #dfdfdf;
+    max-width: 1400px;
+    margin: 12px auto;
+    padding: 20px;
+}
+
+.comments-section h2 {
+    font-family: Tahoma, Verdana, Arial, sans-serif;
+    color: #000080;
+    margin-bottom: 1rem;
+    border-bottom: 2px solid #c0c0c0;
+    padding-bottom: 6px;
+    font-size: 14px;
+}
+
+/* =====================================================
+   CLIPPY-BILD — simples dekoratives PNG, fixed unten rechts.
+   ===================================================== */
+.clippy-img {
+    position: fixed;
+    bottom: 20px;
+    right: 20px;
+    z-index: 500;
+    width: 100px;
+    height: auto;
+    pointer-events: none; /* klickdurchlässig */
+    image-rendering: pixelated; /* scharfe Kanten bei kleinem PNG */
+}
+
+/* =====================================================
+   STATUSBAR
+   Klassische Win98-Statusleiste am unteren Rand des
+   Sheet-Wrappers. Zeigt Anzahl sichtbarer Einträge.
+   Grau mit Inset-Border und vertikalen Trennern zwischen
+   Segmenten — genau wie im Windows Explorer.
+   ===================================================== */
+.statusbar {
+    display: flex;
+    align-items: center;
+    gap: 0;
+    background: #c0c0c0;
+    border-top: 1px solid #808080;
+    padding: 2px 4px;
+    font-family: Tahoma, Verdana, Arial, sans-serif;
+    font-size: 12px;
+    color: #000000;
+    flex-shrink: 0;
+    user-select: none;
+}
+
+/* Jedes Segment hat einen Inset-Rahmen und festes Padding */
+.statusbar-segment {
+    border-top: 1px solid #808080;
+    border-left: 1px solid #808080;
+    border-bottom: 1px solid #dfdfdf;
+    border-right: 1px solid #dfdfdf;
+    padding: 1px 8px;
+    min-width: 80px;
+    white-space: nowrap;
+}
+
+/* =====================================================
+   RESPONSIVE
+   ===================================================== */
+@media (max-width: 768px) {
+    .sheet-wrapper {
+        height: calc(100vh - 40px);
+        padding: 6px 6px 6px 60px;
+    }
+
+    .sheet-content {
+        padding: 10px;
+    }
+
+    .sheet-tabs {
+        gap: 3px;
+    }
+
+    .sheet-tab {
+        padding: 4px 8px;
+        font-size: 12px;
+        flex: 1 1 auto;
+        min-width: 0;
+        white-space: nowrap;
+    }
+
+    .sheet-table th,
+    .sheet-table td {
+        padding: 4px 8px;
+        font-size: 12px;
+    }
+
+    .item-list {
+        grid-template-columns: 1fr;
+    }
+}
