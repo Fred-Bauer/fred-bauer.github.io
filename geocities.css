@@ -97,7 +97,7 @@ body.page-index main {
     grid-template-columns: 70px auto 160px;
     align-items: start;
     gap: 20px;
-    padding: 16px 12px 0;
+    padding: 12px 12px 0;
     max-width: 1000px;
     justify-self: center;
 }
